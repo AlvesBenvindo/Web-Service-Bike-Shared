@@ -1,16 +1,21 @@
 package ao.uan.fc.cc4.bikeshared.bd.user;
 
-import jakarta.persistence.Column;
+import jakarta.persistence.Table;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 
+import java.io.Serializable;
+
 @Entity
-public class UserModel {
+@Table(name = "users")
+public class UserModel implements Serializable {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
+    @Column(name = "id")
     private Long id;
     @Column(name = "email")
     protected String email;
@@ -41,7 +46,7 @@ public class UserModel {
 
     /**
      * 
-     * @param String
+     * @param value
      */
     public void setEmail(String value) {
         this.email = value;
@@ -58,7 +63,7 @@ public class UserModel {
     /**
      * Sets the value of the password property.
      *
-     * @param String 
+     * @param value
      *
      */
     public void setPassword(String value) {
