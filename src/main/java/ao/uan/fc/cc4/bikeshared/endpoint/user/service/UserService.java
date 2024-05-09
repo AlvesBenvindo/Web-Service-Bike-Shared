@@ -70,7 +70,7 @@ public class UserService {
         List<UserModel> userList = userRepo.findAll();
 
         for (int i = 0; userList.size()!=0 && i < userList.size(); i++)
-            if (userList.get(i).getEmail() == email)
+            if (userList.get(i).getEmail().equals(email))
                 return userList.get(i);
 
         return null;

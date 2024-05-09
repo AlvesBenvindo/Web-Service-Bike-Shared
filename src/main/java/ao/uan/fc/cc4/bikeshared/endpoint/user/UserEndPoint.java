@@ -15,7 +15,6 @@ import xml.soap.user.UserRequest;
 public class UserEndPoint {
 	
 	private static final String NAMESPACE_URI = "http://user.soap.xml";
-	private static final String NAMESPACE_URI_Session = "http://user.soap.xml";
 	
 	@Autowired
 	private UserService userService;
