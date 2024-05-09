@@ -10,6 +10,7 @@ package xml.soap.user;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
 
@@ -24,7 +25,7 @@ import jakarta.xml.bind.annotation.XmlType;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="id" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
+ *         &lt;element name="header" type="{http://user.soap.xml}HeaderType"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -35,27 +36,36 @@ import jakarta.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "id"
+    "header"
 })
-@XmlRootElement(name = "UserIdRequest")
-public class UserIdRequest {
+@XmlRootElement(name = "ReStartSession")
+public class ReStartSession {
 
-    protected int id;
+    @XmlElement(required = true)
+    protected HeaderType header;
 
     /**
-     * Gets the value of the id property.
+     * Gets the value of the header property.
      * 
+     * @return
+     *     possible object is
+     *     {@link HeaderType }
+     *     
      */
-    public int getId() {
-        return id;
+    public HeaderType getHeader() {
+        return header;
     }
 
     /**
-     * Sets the value of the id property.
+     * Sets the value of the header property.
      * 
+     * @param value
+     *     allowed object is
+     *     {@link HeaderType }
+     *     
      */
-    public void setId(int value) {
-        this.id = value;
+    public void setHeader(HeaderType value) {
+        this.header = value;
     }
 
 }

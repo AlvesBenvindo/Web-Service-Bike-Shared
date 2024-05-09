@@ -17,13 +17,13 @@ public class UserModel implements Serializable {
     @GeneratedValue(strategy=GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     protected String email;
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     protected String password;
-    @Column(name = "nome")
+    @Column(name = "nome", nullable = false)
     protected String nome;
-    @Column(name = "sobrenome")
+    @Column(name = "sobrenome", nullable = false)
     protected String sobrenome;
     @Column(name = "genero")
     protected String genero;
@@ -33,8 +33,28 @@ public class UserModel implements Serializable {
     protected String telefone;
     @Column(name = "foto")
     protected String foto;
-    @Column(name = "token")
-    protected String token;
+    @Column(name = "tipo", nullable = false)
+    protected Integer tipo;
+
+    /**
+     *
+     * @return
+     *     {@link Integer }
+     *
+     */
+    public Long getId() {
+        return id;
+    }
+
+    /**
+     *
+     * @param id
+     *     {@link Integer }
+     *
+     */
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     /**
      * 
@@ -54,14 +74,15 @@ public class UserModel implements Serializable {
 
     /**
      * 
-     * @return String
+     * @return
+     *     {@link String }
+     *
      */
     public String getPassword() {
         return password;
     }
 
     /**
-     * Sets the value of the password property.
      *
      * @param value
      *
@@ -73,6 +94,7 @@ public class UserModel implements Serializable {
     /**
      * 
      * @return String
+     *
      */
     public String getNome() {
         return nome;
@@ -81,6 +103,7 @@ public class UserModel implements Serializable {
     /**
      * 
      * @param value
+     *
      */
     public void setNome(String value) {
         this.nome = value;
@@ -89,17 +112,16 @@ public class UserModel implements Serializable {
     /**
      * 
      * @return String
+     *
+     *
      */
     public String getSobrenome() {
         return sobrenome;
     }
 
     /**
-     * Sets the value of the sobrenome property.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
      *
      */
     public void setSobrenome(String value) {
@@ -107,11 +129,8 @@ public class UserModel implements Serializable {
     }
 
     /**
-     * Gets the value of the genero property.
      *
      * @return
-     *     possible object is
-     *     {@link String }
      *
      */
     public String getGenero() {
@@ -119,11 +138,8 @@ public class UserModel implements Serializable {
     }
 
     /**
-     * Sets the value of the genero property.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
      *
      */
     public void setGenero(String value) {
@@ -131,11 +147,8 @@ public class UserModel implements Serializable {
     }
 
     /**
-     * Gets the value of the bi property.
      *
      * @return
-     *     possible object is
-     *     {@link String }
      *
      */
     public String getBI() {
@@ -143,11 +156,8 @@ public class UserModel implements Serializable {
     }
 
     /**
-     * Sets the value of the bi property.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
      *
      */
     public void setBI(String value) {
@@ -155,10 +165,8 @@ public class UserModel implements Serializable {
     }
 
     /**
-     * Gets the value of the telefone property.
      *
      * @return
-     *     possible object is
      *     {@link String }
      *
      */
@@ -167,10 +175,8 @@ public class UserModel implements Serializable {
     }
 
     /**
-     * Sets the value of the telefone property.
      *
      * @param value
-     *     allowed object is
      *     {@link String }
      *
      */
@@ -179,10 +185,8 @@ public class UserModel implements Serializable {
     }
 
     /**
-     * Gets the value of the foto property.
      *
      * @return
-     *     possible object is
      *     {@link String }
      *
      */
@@ -191,10 +195,8 @@ public class UserModel implements Serializable {
     }
 
     /**
-     * Sets the value of the foto property.
      *
      * @param value
-     *     allowed object is
      *     {@link String }
      *
      */
@@ -203,27 +205,23 @@ public class UserModel implements Serializable {
     }
 
     /**
-     * Gets the value of the token property.
      *
      * @return
-     *     possible object is
      *     {@link String }
      *
      */
-    public String getToken() {
-        return token;
+    public Integer getTipo() {
+        return tipo;
     }
 
     /**
-     * Sets the value of the token property.
      *
      * @param value
-     *     allowed object is
      *     {@link String }
      *
      */
-    public void setToken(String value) {
-        this.token = value;
+    public void setTipo(Integer value) {
+        this.tipo = value;
     }
 
 }

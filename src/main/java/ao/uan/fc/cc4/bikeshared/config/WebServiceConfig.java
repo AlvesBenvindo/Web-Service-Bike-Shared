@@ -26,7 +26,7 @@ public class WebServiceConfig extends WsConfigurerAdapter {
     }
 
     @Bean(name = "user")
-    DefaultWsdl11Definition defaultWsdlDefinition ( XsdSchema  xmlSchema ) {
+    DefaultWsdl11Definition userWsdlDefinition ( XsdSchema  xmlSchema ) {
         DefaultWsdl11Definition wsdl11def = new DefaultWsdl11Definition();
 
         wsdl11def.setPortTypeName("/apiSoapHttpBikeShares");
@@ -39,7 +39,7 @@ public class WebServiceConfig extends WsConfigurerAdapter {
 
     @Bean
     XsdSchema xmlSchema () {
-        return new SimpleXsdSchema(new ClassPathResource("xsd/user_schema.xsd"));
+        return new SimpleXsdSchema(new ClassPathResource("xsd/user_schema.xsd") );
     }
 
 }
