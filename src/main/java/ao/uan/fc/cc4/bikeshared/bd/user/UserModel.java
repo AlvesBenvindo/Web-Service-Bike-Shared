@@ -17,13 +17,13 @@ public class UserModel implements Serializable {
     @GeneratedValue(strategy=GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
-    @Column(name = "email", unique = true)
+    @Column(name = "email")
     protected String email;
-    @Column(name = "password", nullable = false)
+    @Column(name = "password")
     protected String password;
-    @Column(name = "nome", nullable = false)
+    @Column(name = "nome")
     protected String nome;
-    @Column(name = "sobrenome", nullable = false)
+    @Column(name = "sobrenome")
     protected String sobrenome;
     @Column(name = "genero")
     protected String genero;
@@ -33,7 +33,7 @@ public class UserModel implements Serializable {
     protected String telefone;
     @Column(name = "foto")
     protected String foto;
-    @Column(name = "tipo", nullable = false)
+    @Column(name = "tipo")
     protected Integer tipo;
 
     /**

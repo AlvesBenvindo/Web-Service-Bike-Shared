@@ -1,6 +1,8 @@
 package ao.uan.fc.cc4.bikeshared.bd.session;
 
+import ao.uan.fc.cc4.bikeshared.bd.user.UserModel;
 import jakarta.persistence.*;
+import jdk.jfr.Timestamp;
 
 @Entity
 @Table(name = "sessions")
@@ -10,12 +12,13 @@ public class SessionModel {
     @GeneratedValue(strategy= GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
-    @Column(name = "token", unique = true, nullable = false)
+    @Column(name = "token"/*, unique = true, nullable = false*/)
     protected String token;
+    @Timestamp
 
     /**
      *
-     * @return
+     * @return Long
      */
     public Long getId() {
         return id;
@@ -23,7 +26,7 @@ public class SessionModel {
 
     /**
      *
-     * @param id
+     * @param Long
      */
     public void setId(Long id) {
         this.id = id;
@@ -31,7 +34,7 @@ public class SessionModel {
 
     /**
      *
-     * @return
+     * @return String
      */
     public String getToken() {
         return token;
@@ -39,7 +42,7 @@ public class SessionModel {
 
     /**
      *
-     * @param token
+     * @param String
      */
     public void setToken(String token) {
         this.token = token;

@@ -25,7 +25,8 @@ import jakarta.xml.bind.annotation.XmlType;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="header" type="{http://user.soap.xml}HeaderType"/&gt;
+ *         &lt;element name="email" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="password" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -36,36 +37,63 @@ import jakarta.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "header"
+    "email",
+    "password"
 })
-@XmlRootElement(name = "ReStartSession")
-public class ReStartSession {
+@XmlRootElement(name = "LoginRequest")
+public class LoginRequest {
 
     @XmlElement(required = true)
-    protected HeaderType header;
+    protected String email;
+    @XmlElement(required = true)
+    protected String password;
 
     /**
-     * Gets the value of the header property.
+     * Gets the value of the email property.
      * 
      * @return
      *     possible object is
-     *     {@link HeaderType }
+     *     {@link String }
      *     
      */
-    public HeaderType getHeader() {
-        return header;
+    public String getEmail() {
+        return email;
     }
 
     /**
-     * Sets the value of the header property.
+     * Sets the value of the email property.
      * 
      * @param value
      *     allowed object is
-     *     {@link HeaderType }
+     *     {@link String }
      *     
      */
-    public void setHeader(HeaderType value) {
-        this.header = value;
+    public void setEmail(String value) {
+        this.email = value;
+    }
+
+    /**
+     * Gets the value of the password property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getPassword() {
+        return password;
+    }
+
+    /**
+     * Sets the value of the password property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setPassword(String value) {
+        this.password = value;
     }
 
 }

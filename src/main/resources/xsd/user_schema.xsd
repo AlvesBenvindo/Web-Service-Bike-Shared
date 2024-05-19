@@ -8,14 +8,33 @@
   <!-- Definindo o tipo para o cabeçalho -->
   <xs:complexType name="HeaderType">
     <xs:sequence>
-      <!-- Aqui você define os elementos que compõem o cabeçalho -->
-      <!-- Por exemplo: -->
+      <!-- Token de sessão -->
       <xs:element name="AuthToken" type="xs:string"/>
     </xs:sequence>
   </xs:complexType>
 
-  <!-- Definição do elemento "user" -->
-  <xs:element name="StartSession">
+  <!-- Definindo o tipo para o cabeçalho -->
+  <xs:complexType name="BodyType">
+    <xs:sequence>
+      <!-- email -->
+      <xs:element name="email" type="xs:string" />
+      <!-- password -->
+      <xs:element name="password" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Definição da requisição Login" -->
+  <xs:element name="LogoutRequest">
+    <xs:complexType>
+      <xs:sequence>
+      <!-- Token de sessão -->
+      <xs:element name="AuthToken" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- Definição da requisição logout" -->
+  <xs:element name="LoginRequest">
     <xs:complexType>
       <xs:sequence>
         <!-- email -->
@@ -69,7 +88,7 @@
         <!-- mensagem do estado -->
         <xs:element name="mensagem" type="xs:string" />
         <!-- id -->
-        <xs:element name="id" type="xs:integer" />
+        <xs:element name="id" type="xs:long" />
         <!-- email -->
         <xs:element name="email" type="xs:string" />
         <!-- senha -->
@@ -92,14 +111,36 @@
     </xs:complexType>
   </xs:element>
   
-  <!-- Definição do elemento "user" -->
+  <!-- Definição do elemento "user"
+
+  <xs:complexType name="UserIdRequest">
+    <xs:sequence>
+      
+      <xs:element name="id" type="xs:long" />
+    </xs:sequence>
+  </xs:complexType>-->
+
   <xs:element name="UserIdRequest">
     <xs:complexType>
       <xs:sequence>
-        <!-- id -->
-        <xs:element name="id" type="xs:int" />
+        <xs:element name="Header" type="tns:HeaderType" />
+        <xs:element name="Body">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="userId" type="xs:long" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
 
 </xs:schema>
+
+<!--<xs:complexType name="HeaderType">
+  <xs:sequence>-->
+    <!-- Aqui você define os elementos que compõem o cabeçalho -->
+    <!-- Por exemplo: -->
+    <!--<xs:element name="AuthToken" type="xs:string"/>
+  </xs:sequence>
+</xs:complexType>-->

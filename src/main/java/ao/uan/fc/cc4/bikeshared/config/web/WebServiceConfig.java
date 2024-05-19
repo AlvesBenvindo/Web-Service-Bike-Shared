@@ -1,4 +1,4 @@
-package ao.uan.fc.cc4.bikeshared.config;
+package ao.uan.fc.cc4.bikeshared.config.web;
 
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.ApplicationContext;
@@ -29,7 +29,7 @@ public class WebServiceConfig extends WsConfigurerAdapter {
     DefaultWsdl11Definition userWsdlDefinition ( XsdSchema  xmlSchema ) {
         DefaultWsdl11Definition wsdl11def = new DefaultWsdl11Definition();
 
-        wsdl11def.setPortTypeName("/apiSoapHttpBikeShares");
+        wsdl11def.setPortTypeName("/apiSoapHttpBikeShared");
         wsdl11def.setLocationUri("/api");
         wsdl11def.setTargetNamespace("http://user.soap.xml");
         wsdl11def.setSchema(xmlSchema);
