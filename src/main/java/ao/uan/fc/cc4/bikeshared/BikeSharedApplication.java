@@ -1,6 +1,5 @@
 package ao.uan.fc.cc4.bikeshared;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

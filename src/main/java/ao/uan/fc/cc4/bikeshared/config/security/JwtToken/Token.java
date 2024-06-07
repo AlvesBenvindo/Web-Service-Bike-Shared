@@ -1,14 +1,9 @@
-package ao.uan.fc.cc4.bikeshared.config.security.token;
+package ao.uan.fc.cc4.bikeshared.config.security.JwtToken;
 
-import ao.uan.fc.cc4.bikeshared.bd.session.SessionModel;
-import ao.uan.fc.cc4.bikeshared.bd.user.UserModel;
-import ao.uan.fc.cc4.bikeshared.bd.user.UserRepository;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-//import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
@@ -21,11 +16,12 @@ public class Token {
 
     //@Value("${api.application.secretKey}")
     private static final String SECRET_KEY = "ef2ab415d79937d98efdda7c5b0199d32d8414c19f87579d500746da2d6c24a1810e2dd49a40cac172ece70c040e70ee660faf02b0c77ac0a4309b0af01e00012e32dade2ecd714694e27e749c20e4c0f60d991956798a37e27078a75e77574bf06c4bdea6e9318b23f06f2267217323b797f44e18967178de1aeae7fa9e338250d2a704e53f4d9ea5aa70dae7428e767a9a6f144782ee9811ea7de25c4f711183c284123f6a11c82747399229759c967fddd2726b88e6dcfd54b2f47bcbce7b59a62b91204d98fe39d6ef9439c7aa40ed6abbaa837e3c639941edec1e1d81bc9916fcb1ab33989d01cd8f19c601204251149aa63bc6b64139342a5ba2ddf41b";
+
     protected  static final Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
     private static final long EXPIRATION_TIME = 86400000; // 1 dia
 
-    private Instant generateExpirationTime (Integer time) {
-        return LocalDateTime.now().plusHours(time).toInstant(ZoneOffset.of("+1"));
+    private Instant generateExpirationTime (Integer hour) {
+        return LocalDateTime.now().plusHours(hour).toInstant(ZoneOffset.of("+1"));
     }
 
     public String generateToken(String email, Integer tipo) {
@@ -34,7 +30,7 @@ public class Token {
             return JWT.create()
                     .withIssuer("server")
                     .withSubject(email)
-                    .withExpiresAt( generateExpirationTime( (tipo == 1 )? 24: 366) )
+                    .withExpiresAt( generateExpirationTime( tipo == 1  ? 1 : 24) )
                     .sign(algorithm);
 
         } catch ( JWTCreationException exc ) {

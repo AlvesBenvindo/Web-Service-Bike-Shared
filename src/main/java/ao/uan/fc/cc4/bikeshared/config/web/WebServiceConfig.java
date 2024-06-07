@@ -22,24 +22,42 @@ public class WebServiceConfig extends WsConfigurerAdapter {
         MessageDispatcherServlet servlet = new MessageDispatcherServlet();
         servlet.setApplicationContext(contexto);
         servlet.setTransformWsdlLocations(true);
-        return new ServletRegistrationBean<MessageDispatcherServlet>(servlet, "/api/*");
+        return new ServletRegistrationBean<MessageDispatcherServlet>(servlet, "/ws/*");
     }
 
     @Bean(name = "user")
-    DefaultWsdl11Definition userWsdlDefinition ( XsdSchema  xmlSchema ) {
+    DefaultWsdl11Definition userWsdlDefinition ( XsdSchema  userSchema ) {
         DefaultWsdl11Definition wsdl11def = new DefaultWsdl11Definition();
 
-        wsdl11def.setPortTypeName("/apiSoapHttpBikeShared");
-        wsdl11def.setLocationUri("/api");
+        wsdl11def.setPortTypeName("/apiSoapHttpBikeSharedUser");
+        wsdl11def.setLocationUri("/ws");
         wsdl11def.setTargetNamespace("http://user.soap.xml");
-        wsdl11def.setSchema(xmlSchema);
+        wsdl11def.setSchema(userSchema);
 
         return wsdl11def;
     }
 
     @Bean
-    XsdSchema xmlSchema () {
+    XsdSchema userSchema () {
         return new SimpleXsdSchema(new ClassPathResource("xsd/user_schema.xsd") );
     }
+
+    @Bean(name = "station")
+    DefaultWsdl11Definition estacaoWsdlDefinition (XsdSchema stationSchema) {
+        DefaultWsdl11Definition wsdl11def = new DefaultWsdl11Definition();
+
+        wsdl11def.setPortTypeName("/apiSoapHttpBikeSharedEstacao");
+        wsdl11def.setLocationUri("/ws");
+        wsdl11def.setTargetNamespace("http://station.soap.xml");
+        wsdl11def.setSchema(stationSchema);
+
+        return wsdl11def;
+    }
+
+    @Bean
+    XsdSchema stationSchema() {
+        return new SimpleXsdSchema(new ClassPathResource("xsd/station_schema.xsd"));
+    }
+
 
 }

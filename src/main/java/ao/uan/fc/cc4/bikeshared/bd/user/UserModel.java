@@ -1,13 +1,11 @@
 package ao.uan.fc.cc4.bikeshared.bd.user;
 
-import jakarta.persistence.Table;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import ao.uan.fc.cc4.bikeshared.utils.Genero;
+import ao.uan.fc.cc4.bikeshared.utils.TipoUser;
+import jakarta.persistence.*;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "users")
@@ -17,9 +15,9 @@ public class UserModel implements Serializable {
     @GeneratedValue(strategy=GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
-    @Column(name = "email")
+    @Column(name = "email", unique = true, nullable = false)
     protected String email;
-    @Column(name = "password")
+    @Column(name = "password", nullable = true)
     protected String password;
     @Column(name = "nome")
     protected String nome;
@@ -27,201 +25,103 @@ public class UserModel implements Serializable {
     protected String sobrenome;
     @Column(name = "genero")
     protected String genero;
-    @Column(name = "BI")
+    @Column(name = "bi", unique = true)
     protected String bi;
     @Column(name = "telefone")
     protected String telefone;
     @Column(name = "foto")
     protected String foto;
-    @Column(name = "tipo")
-    protected Integer tipo;
+    @Column(name = "tipo", nullable = false)
+    protected int tipo;
+    @Temporal(TemporalType.DATE)
+    @Column(name = "createdAt")
+    private Timestamp createdAt;
 
-    /**
-     *
-     * @return
-     *     {@link Integer }
-     *
-     */
     public Long getId() {
         return id;
     }
 
-    /**
-     *
-     * @param id
-     *     {@link Integer }
-     *
-     */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /**
-     * 
-     * @return String
-     */
     public String getEmail() {
         return email;
     }
 
-    /**
-     * 
-     * @param value
-     */
-    public void setEmail(String value) {
-        this.email = value;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    /**
-     * 
-     * @return
-     *     {@link String }
-     *
-     */
     public String getPassword() {
         return password;
     }
 
-    /**
-     *
-     * @param value
-     *
-     */
-    public void setPassword(String value) {
-        this.password = value;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    /**
-     * 
-     * @return String
-     *
-     */
     public String getNome() {
         return nome;
     }
 
-    /**
-     * 
-     * @param value
-     *
-     */
-    public void setNome(String value) {
-        this.nome = value;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
-    /**
-     * 
-     * @return String
-     *
-     *
-     */
     public String getSobrenome() {
         return sobrenome;
     }
 
-    /**
-     *
-     * @param value
-     *
-     */
-    public void setSobrenome(String value) {
-        this.sobrenome = value;
+    public void setSobrenome(String sobrenome) {
+        this.sobrenome = sobrenome;
     }
 
-    /**
-     *
-     * @return
-     *
-     */
     public String getGenero() {
         return genero;
     }
 
-    /**
-     *
-     * @param value
-     *
-     */
-    public void setGenero(String value) {
-        this.genero = value;
+    public void setGenero(String genero) {
+        this.genero = genero;
     }
 
-    /**
-     *
-     * @return
-     *
-     */
-    public String getBI() {
+    public String getBi() {
         return bi;
     }
 
-    /**
-     *
-     * @param value
-     *
-     */
-    public void setBI(String value) {
-        this.bi = value;
+    public void setBi(String bi) {
+        this.bi = bi;
     }
 
-    /**
-     *
-     * @return
-     *     {@link String }
-     *
-     */
     public String getTelefone() {
         return telefone;
     }
 
-    /**
-     *
-     * @param value
-     *     {@link String }
-     *
-     */
-    public void setTelefone(String value) {
-        this.telefone = value;
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
     }
 
-    /**
-     *
-     * @return
-     *     {@link String }
-     *
-     */
     public String getFoto() {
         return foto;
     }
 
-    /**
-     *
-     * @param value
-     *     {@link String }
-     *
-     */
-    public void setFoto(String value) {
-        this.foto = value;
+    public void setFoto(String foto) {
+        this.foto = foto;
     }
 
-    /**
-     *
-     * @return
-     *     {@link String }
-     *
-     */
-    public Integer getTipo() {
+    public int getTipo() {
         return tipo;
     }
 
-    /**
-     *
-     * @param value
-     *     {@link String }
-     *
-     */
-    public void setTipo(Integer value) {
-        this.tipo = value;
+    public void setTipo(int tipo) {
+        this.tipo = tipo;
     }
 
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
 }
