@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+        xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        xmlns:tns="http://soap.xml"
+        targetNamespace="http://soap.xml"
+        elementFormDefault="qualified"
+>
+
+    <!-- Definition of element "station" -->
+    <xs:element name="GetStationRequest">
+        <xs:complexType>
+            <xs:sequence>
+
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Definition of the Complex Type for Dock -->
+    <xs:complexType name="DockType">
+        <xs:sequence>
+            <!-- id of dock -->
+            <xs:element name="idDock" type="xs:long" />
+            <!-- name of dock -->
+            <xs:element name="reference" type="xs:string" />
+            <!-- state of dock -->
+            <xs:element name="state" type="xs:int" />
+            <!-- dock info of connection with beacon -->
+            <xs:element name="info" type="xs:string" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="GetStationResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <!-- retorno da confirmação da inserção -->
+                <xs:element name="estado" type="xs:boolean" />
+                <!-- mensagem do estado -->
+                <xs:element name="mensagem" type="xs:string" />
+                <!-- id -->
+                <xs:element name="id" type="xs:long" />
+                <!-- email -->
+                <xs:element name="name" type="xs:string" />
+                <!-- bonus value of station -->
+                <xs:element name="bonus" type="xs:int" />
+                <!-- quantidade de nome do local -->
+                <xs:element name="localName" type="xs:string" />
+                <!-- quantidade de latitude -->
+                <xs:element name="latitude" type="xs:float" />
+                <!-- quantidade de longitude -->
+                <xs:element name="longitude" type="xs:float" />
+                <!-- conjuntode docas of a station -->
+                <xs:element name="dockItem" type="tns:DockType" maxOccurs="unbounded" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

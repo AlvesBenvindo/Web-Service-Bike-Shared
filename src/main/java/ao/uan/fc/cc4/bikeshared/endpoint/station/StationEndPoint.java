@@ -24,9 +24,9 @@ public class StationEndPoint {
      * @param request
      * @return
      */
-    @PayloadRoot(namespace= NAMESPACE_URI, localPart = "GetStationRequest")
+    @PayloadRoot(namespace= NAMESPACE_URI, localPart = "GetStationDetailsRequest")
 	@ResponsePayload
-    public StationResponse getStation (@RequestPayload GetStationRequest request) {
+    public GetStationDetailsResponse getStation (@RequestPayload GetStationDetailsRequest request) {
         System.out.println("Entrando no serviço get Station");
 		return stationService.getStation(request);
     }

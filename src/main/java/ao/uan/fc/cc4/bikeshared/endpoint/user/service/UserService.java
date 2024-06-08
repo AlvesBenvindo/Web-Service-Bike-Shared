@@ -11,11 +11,9 @@ import ao.uan.fc.cc4.bikeshared.utils.HashPassword;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import xml.soap.GetStationRequest;
 import xml.soap.user.*;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 

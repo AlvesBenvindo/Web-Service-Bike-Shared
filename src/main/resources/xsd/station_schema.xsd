@@ -81,6 +81,8 @@
                 <xs:element name="estado" type="xs:boolean" />
                 <!-- mensagem do estado -->
                 <xs:element name="mensagem" type="xs:string" />
+                <!-- id -->
+                <xs:element name="id" type="xs:long" />
                 <!-- email -->
                 <xs:element name="name" type="xs:string" />
                 <!-- bonus value of station -->
@@ -109,6 +111,8 @@
     <!-- Definition of type "station" response -->
     <xs:complexType name="StationResponseType">
         <xs:sequence>
+            <!-- id -->
+            <xs:element name="id" type="xs:long" />
             <!-- station's name -->
             <xs:element name="name" type="xs:string" />
             <!-- bonus value of station -->

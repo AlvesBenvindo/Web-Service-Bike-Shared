@@ -14,7 +14,7 @@ public class StationClient extends WebServiceGatewaySupport {
 
     private static final Logger log = LoggerFactory.getLogger(StationClient.class);
 
-    public GetStationResponse getStationState () {
+    public GetStationResponse getStationState (String url) {
 
         GetStationRequest request = new GetStationRequest();
 
@@ -22,7 +22,7 @@ public class StationClient extends WebServiceGatewaySupport {
 
         GetStationResponse response = (GetStationResponse) getWebServiceTemplate()
                 .marshalSendAndReceive(
-                        "http://localhost:8081/wsStation/station",
+                        url,
                         request,
                         new SoapActionCallback("http://soap.xml/GetStationRequest"));
 
