@@ -61,36 +61,43 @@
   <xs:element name="AddUserRequest">
     <xs:complexType>
       <xs:sequence>
-        <!-- email -->
-        <xs:element name="email" type="xs:string" />
-        <!-- password -->
-        <xs:element name="password" type="xs:string" />
-        <!-- nome -->
-        <xs:element name="nome" type="xs:string" />
-        <!-- sobrenome -->
-        <xs:element name="sobrenome" type="xs:string" />
-        <!-- genero -->
-        <xs:element name="genero" type="xs:string" />
-        <!-- BI -->
-        <xs:element name="bi" type="xs:string" />
-        <!-- telefone -->
-        <xs:element name="telefone" type="xs:string" />
-        <!-- foto -->
-        <xs:element name="foto" type="xs:string" />
-        <!-- tipo -->
-        <xs:element name="tipo" type="xs:int" />
+        <xs:element name="Header" type="tns:HeaderType" />
+        <xs:element name="Body">
+          <xs:complexType>
+            <xs:sequence>
+              <!-- email -->
+              <xs:element name="email" type="xs:string" />
+              <!-- password -->
+              <xs:element name="password" type="xs:string" />
+              <!-- nome -->
+              <xs:element name="nome" type="xs:string" />
+              <!-- sobrenome -->
+              <xs:element name="sobrenome" type="xs:string" />
+              <!-- genero -->
+              <xs:element name="genero" type="xs:string" />
+              <!-- foto -->
+              <xs:element name="foto" type="xs:string" />
+              <!-- tipo -->
+              <xs:element name="tipo" type="xs:int" />
+              <!-- BI -->
+              <xs:element name="bi" type="xs:string" />
+              <!-- telefone -->
+              <xs:element name="telefone" type="xs:string" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
 
-  <xs:element name="UserIdRequest">
+  <xs:element name="GetUserRequest">
     <xs:complexType>
       <xs:sequence>
         <xs:element name="Header" type="tns:HeaderType" />
         <xs:element name="Body">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="userId" type="xs:long" />
+              <xs:element name="Id" type="xs:long" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
@@ -111,8 +118,6 @@
         <xs:element name="ciclistaId" type="xs:long" />
         <!-- email -->
         <xs:element name="email" type="xs:string" />
-        <!-- senha -->
-        <xs:element name="password" type="xs:string" />
         <!-- nome -->
         <xs:element name="nome" type="xs:string" />
         <!-- sobrenome -->
@@ -145,8 +150,6 @@
       <xs:element name="id" type="xs:long" />
       <!-- email -->
       <xs:element name="email" type="xs:string" />
-      <!-- senha -->
-      <xs:element name="password" type="xs:string" />
       <!-- nome -->
       <xs:element name="nome" type="xs:string" />
       <!-- sobrenome -->
@@ -176,8 +179,45 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+  
+  <!-- Definição do elemento "ciclista" -->
+  <xs:element name="AddCiclistaRequest">
+    <xs:complexType>
+      <xs:sequence>
+        <!-- email -->
+        <xs:element name="email" type="xs:string" />
+        <!-- password -->
+        <xs:element name="password" type="xs:string" />
+        <!-- nome -->
+        <xs:element name="nome" type="xs:string" />
+        <!-- sobrenome -->
+        <xs:element name="sobrenome" type="xs:string" />
+        <!-- genero -->
+        <xs:element name="genero" type="xs:string" />
+        <!-- foto -->
+        <xs:element name="foto" type="xs:string" />
+        <!-- tipo -->
+        <xs:element name="tipo" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
 
-  <xs:element name="CiclistaIdRequest">
+  <xs:element name="GetCiclistaRequest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Header" type="tns:HeaderType" />
+        <xs:element name="Body">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Id" type="xs:long" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="DeleteCiclistaRequest">
     <xs:complexType>
       <xs:sequence>
         <xs:element name="Header" type="tns:HeaderType" />
@@ -203,24 +243,16 @@
         <xs:element name="id" type="xs:long" />
         <!-- email -->
         <xs:element name="email" type="xs:string" />
-        <!-- senha -->
-        <xs:element name="password" type="xs:string" />
         <!-- nome -->
         <xs:element name="nome" type="xs:string" />
         <!-- sobrenome -->
         <xs:element name="sobrenome" type="xs:string" />
         <!-- genero -->
         <xs:element name="genero" type="xs:string" />
-        <!-- BI -->
-        <xs:element name="bi" type="xs:string" />
-        <!-- telefone -->
-        <xs:element name="telefone" type="xs:string" />
         <!-- foto -->
         <xs:element name="foto" type="xs:string" />
         <!-- token -->
         <xs:element name="token" type="xs:string" />
-        <!--id ciclista-->
-        <xs:element name="ciclistaId" type="xs:long" />
         <!-- state of ciclista -->
         <xs:element name="state" type="xs:int" />
         <!-- saldo of cliclista -->
@@ -243,8 +275,6 @@
       <xs:element name="id" type="xs:long" />
       <!-- email -->
       <xs:element name="email" type="xs:string" />
-      <!-- senha -->
-      <xs:element name="password" type="xs:string" />
       <!-- nome -->
       <xs:element name="nome" type="xs:string" />
       <!-- sobrenome -->
@@ -281,6 +311,44 @@
     </xs:complexType>
   </xs:element>
 
+  <xs:element name="UpdateCiclistaRequest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Header" type="tns:HeaderType" />
+        <xs:element name="Body">
+          <xs:complexType>
+            <xs:sequence>
+              <!-- id -->
+              <xs:element name="id" type="xs:long" />
+              <!-- email -->
+              <xs:element name="email" type="xs:string" />
+              <!-- senha -->
+              <xs:element name="password" type="xs:string" />
+              <!-- nome -->
+              <xs:element name="nome" type="xs:string" />
+              <!-- sobrenome -->
+              <xs:element name="sobrenome" type="xs:string" />
+              <!-- genero -->
+              <xs:element name="genero" type="xs:string" />
+              <!-- BI -->
+              <xs:element name="bi" type="xs:string" />
+              <!-- telefone -->
+              <xs:element name="telefone" type="xs:string" />
+              <!-- foto -->
+              <xs:element name="foto" type="xs:string" />
+              <!--id ciclista-->
+              <xs:element name="ciclistaId" type="xs:long" />
+              <!-- state of ciclista -->
+              <xs:element name="state" type="xs:int" />
+              <!-- saldo of cliclista -->
+              <xs:element name="points" type="xs:int" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
   <!-- definition of ciclista List -->
   <xs:element name="GetSaldoRequest">
     <xs:complexType>
@@ -310,8 +378,6 @@
     </xs:complexType>
   </xs:element>
 
-
-
   <xs:element name="TransferPointsRequest">
     <xs:complexType>
       <xs:sequence>
@@ -324,7 +390,7 @@
               <!-- id of ciclista receptor of points-->
               <xs:element name="BeneficiarioId" type="xs:long" />
               <!-- points-->
-              <xs:element name="points" type="xs:long" />
+              <xs:element name="points" type="xs:int" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
@@ -339,6 +405,62 @@
         <xs:element name="estado" type="xs:boolean" />
         <!-- mensagem do estado -->
         <xs:element name="mensagem" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="SendMessageRequest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Header" type="tns:HeaderType" />
+        <xs:element name="Body">
+          <xs:complexType>
+            <xs:sequence>
+              <!-- id of ciclista issuer of points-->
+              <xs:element name="emissorId" type="xs:long" />
+              <!-- id of ciclista receptor of points-->
+              <xs:element name="receptorId" type="xs:long" />
+              <!-- points-->
+              <xs:element name="message" type="xs:string" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="SendMessageResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <!-- retorno da confirmação da inserção -->
+        <xs:element name="estado" type="xs:boolean" />
+        <!-- mensagem do estado -->
+        <xs:element name="mensagem" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="CloseChatRequest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Header" type="tns:HeaderType" />
+        <xs:element name="Body">
+          <xs:complexType>
+            <xs:sequence>
+              <!-- id of ciclista issuer of points-->
+              <xs:element name="emissorId" type="xs:long" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="CloseChatResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <!-- retorno da confirmação da inserção -->
+        <xs:element name="estado" type="xs:boolean" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

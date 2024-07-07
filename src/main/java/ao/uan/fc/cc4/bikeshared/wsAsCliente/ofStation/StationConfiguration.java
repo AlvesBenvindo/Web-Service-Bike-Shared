@@ -1,4 +1,4 @@
-package ao.uan.fc.cc4.bikeshared.cliente.station;
+package ao.uan.fc.cc4.bikeshared.wsAsCliente.ofStation;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -23,9 +23,9 @@ public class StationConfiguration {
     }
 
     @Bean
-    public StationClient stationClient (Jaxb2Marshaller marshaller) {
+    public WSstation stationClient (Jaxb2Marshaller marshaller) {
 
-        StationClient client = new StationClient();
+        WSstation client = new WSstation();
         String baseUrl = "http://127.0.0.1:";
         client.setDefaultUri(baseUrl + stationPort + "/wsStation");
         client.setMarshaller(marshaller);

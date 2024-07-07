@@ -1,12 +1,15 @@
 package ao.uan.fc.cc4.bikeshared.bd.ciclista;
 
-import ao.uan.fc.cc4.bikeshared.bd.user.UserModel;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.sql.Timestamp;
 
 @Entity
 @Table( name = "ciclistas" )
+@Getter
+@Setter
 public class CiclistaModel {
 
     @Id
@@ -17,52 +20,14 @@ public class CiclistaModel {
     protected Integer points;
     @Column(name = "state")
     protected  Integer state;
-
-    @Column(name = "user")
-    protected Long user;
+    @Column(name = "info")
+    private String info;
+    @Column(name = "userId")
+    protected Long userId;
 
     @Temporal(TemporalType.DATE)
     @Column(name = "createdAt")
     private Timestamp createdAt;
 
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Integer getPoints() {
-        return points;
-    }
-
-    public void setPoints(Integer points) {
-        this.points = points;
-    }
-
-    public Integer getState() {
-        return state;
-    }
-
-    public void setState(Integer state) {
-        this.state = state;
-    }
-
-    public Long getUser() {
-        return user;
-    }
-
-    public void setUser(Long user) {
-        this.user = user;
-    }
-
-    public Timestamp getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Timestamp createdAt) {
-        this.createdAt = createdAt;
-    }
 }

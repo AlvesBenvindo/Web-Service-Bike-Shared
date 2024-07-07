@@ -29,6 +29,44 @@
         </xs:sequence>
     </xs:complexType>
 
+    <!-- Definition request AddDock method -->
+    <xs:element name="AddDockRequest">
+        <xs:complexType>
+            <xs:sequence>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Definition response AddDock method -->
+    <xs:element name="AddDockResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <!-- id of dock -->
+                <xs:element name="state" type="xs:boolean" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Definition request deleteDock method -->
+    <xs:element name="DeleteDockRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <!-- id of dock -->
+                <xs:element name="reference" type="xs:string" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Definition response deleteDock method -->
+    <xs:element name="DeleteDockResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <!-- id of dock -->
+                <xs:element name="state" type="xs:boolean" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
     <xs:element name="GetStationResponse">
         <xs:complexType>
             <xs:sequence>
@@ -52,6 +90,52 @@
                 <xs:element name="dockItem" type="tns:DockType" maxOccurs="unbounded" />
             </xs:sequence>
         </xs:complexType>
+    </xs:element>
+
+    <!-- Definition request of the Alter State Dock in upBike Method -->
+    <xs:element name="AlterStateDockInUpBikeRequest">
+      <xs:complexType>
+        <xs:sequence>
+            <!-- id of dock -->
+            <xs:element name="idDock" type="xs:long" />
+            <!-- name of dock -->
+            <xs:element name="state" type="xs:int" />
+        </xs:sequence>
+      </xs:complexType>
+    </xs:element>
+
+    <!-- Definition response of the Alter State Dock in upBike Method -->
+    <xs:element name="AlterStateDockInUpBikeResponse">
+      <xs:complexType>
+        <xs:sequence>
+            <!-- name of dock -->
+            <xs:element name="estado" type="xs:boolean" />
+        </xs:sequence>
+      </xs:complexType>
+    </xs:element>
+
+    <!-- Definition request of the Alter State Dock in downBike Method -->
+    <xs:element name="AlterStateDockInDownBikeRequest">
+      <xs:complexType>
+        <xs:sequence>
+            <!-- id of dock -->
+            <xs:element name="idDock" type="xs:long" />
+            <!-- name of dock -->
+            <xs:element name="state" type="xs:int" />
+            <!-- info of dock -->
+            <xs:element name="info" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+    </xs:element>
+
+    <!-- Definition response of the Alter State Dock indownpBike Method -->
+    <xs:element name="AlterStateDockInDownBikeResponse">
+      <xs:complexType>
+        <xs:sequence>
+            <!-- name of dock -->
+            <xs:element name="estado" type="xs:boolean" />
+        </xs:sequence>
+      </xs:complexType>
     </xs:element>
 
 </xs:schema>

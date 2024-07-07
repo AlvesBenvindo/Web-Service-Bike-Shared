@@ -7,9 +7,9 @@ import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
-import ao.uan.fc.cc4.bikeshared.endpoint.station.service.StationService;
+import ao.uan.fc.cc4.bikeshared.endpoint.user.service.AuthenticationService;
+import ao.uan.fc.cc4.bikeshared.endpoint.user.service.CiclistaService;
 import ao.uan.fc.cc4.bikeshared.endpoint.user.service.UserService;
-import xml.soap.GetStationRequest;
 import xml.soap.user.*;
 
 @Endpoint
@@ -21,39 +21,36 @@ public class UserEndPoint {
 	@Autowired
 	private UserService userService;
 	@Autowired
-	private StationService stationService;
-
-	/**
-	 *
-	 * @param {@link UserRequest}
-	 * @return {@link UserResponse}
-	 */
-	@PayloadRoot(namespace= NAMESPACE_URI, localPart = "AddUserRequest")
-	@ResponsePayload
-	public UserResponse addUser (@RequestPayload AddUserRequest request) {
-		System.out.println("Entrando no serviço addUser");
-		return userService.addUser(request);
-	}
+	private AuthenticationService auth; 
+	@Autowired
+	private CiclistaService ciclistaService; 
 
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "LoginRequest")
 	@ResponsePayload
 	public UserResponse login (@RequestPayload LoginRequest request) {
 		System.out.println("Entrando no serviço de login login");
-		return userService.login(request);
+		return auth.login(request);
 	}
 
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "LogoutRequest")
 	@ResponsePayload
 	public UserResponse logout (@RequestPayload LogoutRequest request) {
 		System.out.println("Entrando no serviço logout");
-		return userService.logout(request);
+		return auth.logout(request);
 	}
 
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "ValidateTokenRequest")
 	@ResponsePayload
 	public UserResponse validateSession (@RequestPayload ValidateTokenRequest request) {
 		System.out.println("Entrando no serviço validateSession");
-		return userService.validationSession(request);
+		return auth.validationSession(request);
+	}
+
+	@PayloadRoot(namespace= NAMESPACE_URI, localPart = "AddUserRequest")
+	@ResponsePayload
+	public UserResponse addUserAdmin (@RequestPayload AddUserRequest request) {
+		System.out.println("Entrando no serviço addUser");
+		return userService.addUserAdmin(request);
 	}
 
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "UserIdRequest")
@@ -70,30 +67,67 @@ public class UserEndPoint {
 		return userService.getAllUsers(request);
 	}
 
+	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "AddCiclistaRequest")
+	@ResponsePayload
+	public CiclistaResponse addCiclista (@RequestPayload AddCiclistaRequest request) {
+		System.out.println("Entrando no serviço getCiclista");
+		return ciclistaService.addCiclista(request);
+	}
+
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "CiclistaIdRequest")
 	@ResponsePayload
 	public CiclistaResponse getCiclista (@RequestPayload CiclistaIdRequest request) {
-		System.out.println("Entrando no serviço getUserById");
-		return userService.getCiclista(request);
+		System.out.println("Entrando no serviço getCiclista");
+		return ciclistaService.getCiclista(request);
+	}
+
+	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "UpdateCiclistaRequest")
+	@ResponsePayload
+	public CiclistaResponse updateCiclista (@RequestPayload UpdateCiclistaRequest request) {
+		System.out.println("Entrando no updateCiclista ");
+		return ciclistaService.updateCiclista(request);
+	}
+
+	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "DeleteCiclistaRequest")
+	@ResponsePayload
+	public CiclistaResponse deleteCiclista (@RequestPayload DeleteCiclistaRequest request) {
+		System.out.println("Entrando no deleteCiclista ");
+		return ciclistaService.deleteCiclista(request);
 	}
 
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "AllCiclistasRequest")
 	@ResponsePayload
 	public CiclistaListResponse getAllCiclista (@RequestPayload AllCiclistasRequest request) {
 		System.out.println("Entrando no serviço getUserById");
-		return userService.getAllCiclista(request);
+		return ciclistaService.getAllCiclista(request);
 	}
 
-    /**
-     * 
-     * @param request
-     * @return
-     */
     @PayloadRoot(namespace= NAMESPACE_URI, localPart = "GetSaldoRequest")
 	@ResponsePayload
     public GetSaldoResponse getSaldo (@RequestPayload GetSaldoRequest request) {
-        System.out.println("Entrando no serviço add Station");
-		return userService.getSaldo(request);
+        System.out.println("Entrando no serviço de consultar saldo");
+		return ciclistaService.getSaldo(request);
+    }
+
+    @PayloadRoot(namespace= NAMESPACE_URI, localPart = "TransferPointsRequest")
+	@ResponsePayload
+    public TransferPointsResponse getSaldo (@RequestPayload TransferPointsRequest request) {
+        System.out.println("Entrando no serviço de transferência de pontos");
+		return ciclistaService.transferPoints(request);
+    }
+
+    @PayloadRoot(namespace= NAMESPACE_URI, localPart = "SendMessageRequest")
+	@ResponsePayload
+    public SendMessageResponse sendMessage (@RequestPayload SendMessageRequest request) {
+        System.out.println("Entrando no serviço de envio de mensagens");
+		return ciclistaService.sendMessage(request);
+    }
+
+    @PayloadRoot(namespace= NAMESPACE_URI, localPart = "CloseChatRequest")
+	@ResponsePayload
+    public CloseChatResponse sendMessage (@RequestPayload CloseChatRequest request) {
+        System.out.println("Entrando no serviço de envio de mensagens");
+		return ciclistaService.closeChat(request);
     }
 
 }

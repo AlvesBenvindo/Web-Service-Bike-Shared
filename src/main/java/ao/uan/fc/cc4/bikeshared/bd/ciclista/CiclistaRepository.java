@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CiclistaRepository extends JpaRepository<CiclistaModel, Long> {
-    CiclistaModel findByUser(Long user);
+    CiclistaModel findByUserId(Long userId);
 }

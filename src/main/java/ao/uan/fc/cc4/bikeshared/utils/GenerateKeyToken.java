@@ -4,8 +4,10 @@ import java.security.SecureRandom;
 
 public class GenerateKeyToken {
 
-
-
+    /*
+     * Método para gerar uma chave secreta
+     * que pode se usar para gerar o token
+     */
     public static String generateSecretKey(int keyLength) {
         SecureRandom random = new SecureRandom();
         byte[] bytes = new byte[keyLength];
@@ -20,8 +22,8 @@ public class GenerateKeyToken {
         return key.toString();
     }
 
-    public static void main (String [] args) {
-        System.out.println(generateSecretKey(256));
-    }
+    // public static void main (String [] args) {
+    //     System.out.println(generateSecretKey(256));
+    // }
 
 }
