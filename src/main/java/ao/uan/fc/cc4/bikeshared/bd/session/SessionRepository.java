@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 public interface SessionRepository extends JpaRepository<SessionModel, Long> {
 
     SessionModel findByToken(String token);
-    SessionModel  findByFingerPrint(String fingerPrint);
+    // SessionModel  findByFingerPrint(String fingerPrint);
     SessionModel  findByUser(Long user);
 
 }

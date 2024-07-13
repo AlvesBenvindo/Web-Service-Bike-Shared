@@ -14,7 +14,10 @@ import org.springframework.stereotype.Service;
 
 import ao.uan.fc.cc4.bikeshared.bd.station.StationRepository;
 import ao.uan.fc.cc4.bikeshared.endpoint.user.service.AuthenticationService;
+import ao.uan.fc.cc4.bikeshared.utils.Coordinates;
+import ao.uan.fc.cc4.bikeshared.utils.GeoLocationDTO;
 import ao.uan.fc.cc4.bikeshared.utils.Utils;
+import ao.uan.fc.cc4.bikeshared.wsAsCliente.ofJOpenCage.ServiceGeoLocation;
 import ao.uan.fc.cc4.bikeshared.wsAsCliente.ofStation.WSstation;
 import ao.uan.fc.cc4.bikeshared.bd.station.StationModel;
 import xml.soap.station.*;
@@ -37,6 +40,8 @@ public class StationService {
     private CiclistaRepository ciclistaRepo;
     @Autowired(required = true)
     private AquisicaoBikeRepository aquisicicaoRepo;
+    @Autowired(required = true)
+    private ServiceGeoLocation geoLocationService;
 
     public StationResponse addStation (AddStationRequest request) {
 
@@ -97,6 +102,24 @@ public class StationService {
                         response.getDockItem().add(d);
                     });
 
+                    GeoLocationDTO geoLocation = geoLocationService.getGeoLocation(String.valueOf(stationModel.get().getLatitude()), String.valueOf(stationModel.get().getLongitude()));
+
+                    if(geoLocation!=null){
+            
+                        System.out.println("País: "+geoLocation.getPais());
+                        System.out.println("Província: "+geoLocation.getProvincia());
+                        System.out.println("Município: "+geoLocation.getMunicipio());
+                        System.out.println("Distrito: "+geoLocation.getDistrito());
+                        System.out.println("Avenida: "+geoLocation.getAvenida());
+        
+                        response.setPais(geoLocation.getPais());
+                        response.setProvincia(geoLocation.getProvincia());
+                        response.setMunicipio(geoLocation.getMunicipio());
+                        response.setDistrito(geoLocation.getDistrito());
+                        response.setAvenida(geoLocation.getAvenida());
+
+                    }
+
                     return response;
                 }
                 response.setEstado(false);
@@ -122,17 +145,77 @@ public class StationService {
             if (!stationList.isEmpty()) {
                 response.setEstado(true);
                 response.setMensagem("Estações encontradas com sucesso!");
-                stationList.forEach(
-                        station -> {
-                            StationResponseType stationType = new StationResponseType();
-                            BeanUtils.copyProperties(station, stationType);
-                            stationType.setDocks(station.getQtdDocks());
-                            stationType.setDocksDisp(station.getQtdDocksDispo());
-                            response.getStationItem().add(stationType);
-                        });
+                stationList.forEach( station -> {
+                    StationResponseType stationType = new StationResponseType();
+                    BeanUtils.copyProperties(station, stationType);
+                    stationType.setDocks(station.getQtdDocks());
+                    stationType.setDocksDisp(station.getQtdDocksDispo());
+
+                    GeoLocationDTO geoLocation = geoLocationService.getGeoLocation(String.valueOf(station.getLatitude()), String.valueOf(station.getLongitude()));
+
+                    if(geoLocation!=null){
+
+                        stationType.setPais(geoLocation.getPais());
+                        stationType.setProvincia(geoLocation.getProvincia());
+                        stationType.setMunicipio(geoLocation.getMunicipio());
+                        stationType.setDistrito(geoLocation.getDistrito());
+                        stationType.setAvenida(geoLocation.getAvenida());
+
+                    }
+                    response.getStationItem().add(stationType);
+                });
             } else {
                 response.setEstado(false);
                 response.setMensagem("Não há estações ainda!");
+            }
+        }
+        return response;
+    }
+
+    public AllStationResponse getAllStationMoreProxime (AllStationMoreProximeRequest request) {
+        AllStationResponse response = new AllStationResponse();
+        if (!auth.sessionIsValid(request.getHeader().getAuthToken())) {
+            //this.DestilaHeadResponse(session);
+            response.setEstado(false);
+            response.setMensagem("Token inválido, undefined!");
+        }else {
+            List<StationModel> stationList = stationRepo.findAll();
+            if (!stationList.isEmpty()) {
+                response.setEstado(true);
+                stationList.forEach( station -> {
+
+                    Double distancia = geoLocationService.
+                        calcDistanceHaversine(
+                            new Coordinates(request.getBody().getLatitude(), request.getBody().getLongitude()), 
+                            new Coordinates(station.getLatitude().doubleValue(), station.getLongitude().doubleValue()), 
+                            request.getBody().getRadius()
+                        );
+                    
+                    if(distancia>0){
+                        StationResponseType stationType = new StationResponseType();
+                        BeanUtils.copyProperties(station, stationType);
+                        stationType.setDocks(station.getQtdDocks());
+                        stationType.setDocksDisp(station.getQtdDocksDispo());
+
+                        GeoLocationDTO geoLocation = geoLocationService.getGeoLocation(String.valueOf(station.getLatitude()), String.valueOf(station.getLongitude()));
+
+                        if(geoLocation!=null){
+
+                            stationType.setPais(geoLocation.getPais());
+                            stationType.setProvincia(geoLocation.getProvincia());
+                            stationType.setMunicipio(geoLocation.getMunicipio());
+                            stationType.setDistrito(geoLocation.getDistrito());
+                            stationType.setAvenida(geoLocation.getAvenida());
+                            stationType.setDistancia(distancia.intValue());
+
+                        }
+                        response.getStationItem().add(stationType);
+                    }
+                });
+                if (response.getStationItem().isEmpty()) response.setMensagem("Não há estações num raio de "+request.getBody().getRadius()+" metros");
+            } else {
+                response.setEstado(false);
+                response.setMensagem("Não há estações no sistema ainda!");
             }
         }
         return response;

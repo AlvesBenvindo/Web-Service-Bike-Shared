@@ -52,15 +52,14 @@ public class AuthenticationService {
             if (sessionModel != null) {
                 sessionRepo.deleteById(sessionModel.getId());
             }else if(user.getTipo()==2){
-                sessionModel = sessionRepo.findByFingerPrint(request.getFingerPrint());
-                if (sessionModel != null) {
-                    sessionRepo.deleteById(sessionModel.getId());
-                }
+                // sessionModel = sessionRepo.findByFingerPrint(request.getFingerPrint());
+                // if (sessionModel != null) {
+                //     sessionRepo.deleteById(sessionModel.getId());
+                // }
             }
             if (user.getPassword().equals(HashPassword.hashing(request.getPassword()))) {
                 SessionModel session = new SessionModel();
                 session.setToken(jwtToken.generateToken(user.getEmail(), user.getTipo()));
-                if(user.getTipo()==2) session.setFingerPrint(request.getFingerPrint());
                 session.setUser(user.getId());
                 sessionRepo.save(session);
 

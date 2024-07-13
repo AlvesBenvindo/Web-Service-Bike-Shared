@@ -44,6 +44,22 @@
         </xs:complexType>
     </xs:element>
 
+    <!-- Definition of type "geoLocation" -->
+    <xs:complexType name="GeoLocationType">
+        <xs:sequence>
+            <!-- pais -->
+            <xs:element name="pais" type="xs:string" />
+            <!-- provincia -->
+            <xs:element name="provincia" type="xs:string" />
+            <!-- municipio -->
+            <xs:element name="municipio" type="xs:string" />
+            <!-- distrito -->
+            <xs:element name="distrito" type="xs:string" />
+            <!-- avenida -->
+            <xs:element name="avenida" type="xs:string" />
+        </xs:sequence>
+    </xs:complexType>
+
     <!-- Definition of element "station" -->
     <xs:element name="GetStationDetailsRequest">
         <xs:complexType>
@@ -91,8 +107,18 @@
                 <xs:element name="qtdDocks" type="xs:int" />
                 <!-- qtd docks disponiveis -->
                 <xs:element name="qtdDocksDispo" type="xs:int" />
-                <!-- quantidade de nome do local -->
+                <!-- nome do local -->
                 <xs:element name="localName" type="xs:string" />
+                <!-- pais -->
+                <xs:element name="pais" type="xs:string" />
+                <!-- provincia -->
+                <xs:element name="provincia" type="xs:string" />
+                <!-- municipio -->
+                <xs:element name="municipio" type="xs:string" />
+                <!-- distrito -->
+                <xs:element name="distrito" type="xs:string" />
+                <!-- avenida -->
+                <xs:element name="avenida" type="xs:string" />
                 <!-- quantidade de latitude -->
                 <xs:element name="latitude" type="xs:float" />
                 <!-- quantidade de longitude -->
@@ -118,6 +144,18 @@
                 <xs:element name="bonus" type="xs:int" />
                 <!-- quantidade de nome do local -->
                 <xs:element name="localName" type="xs:string" />
+                <!-- pais -->
+                <xs:element name="pais" type="xs:string" />
+                <!-- provincia -->
+                <xs:element name="provincia" type="xs:string" />
+                <!-- municipio -->
+                <xs:element name="municipio" type="xs:string" />
+                <!-- distrito -->
+                <xs:element name="distrito" type="xs:string" />
+                <!-- avenida -->
+                <xs:element name="avenida" type="xs:string" />
+                <!-- GEOlOCATION -->
+                <!--xs:element name="geoLocation" type="tns:GeoLocationType" /-->
                 <!-- quantidade de latitude -->
                 <xs:element name="latitude" type="xs:float" />
                 <!-- quantidade de longitude -->
@@ -137,6 +175,27 @@
         </xs:complexType>
     </xs:element>
 
+    <!-- Definition of all elements "station more proxime" -->
+    <xs:element name="AllStationMoreProximeRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Header" type="tns:HeaderType" />
+                <xs:element name="Body">
+                  <xs:complexType>
+                    <xs:sequence>
+                      <!-- id of ciclista down Bike -->
+                      <xs:element name="latitude" type="xs:double" />
+                      <!-- reference of dock modified -->
+                      <xs:element name="longitude" type="xs:double" />
+                      <!-- info-Beacon of the Bike -->
+                      <xs:element name="radius" type="xs:double" />
+                    </xs:sequence>
+                  </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
     <!-- Definition of type "station" response -->
     <xs:complexType name="StationResponseType">
         <xs:sequence>
@@ -150,12 +209,24 @@
             <xs:element name="Docks" type="xs:int" />
             <!-- qtd docks disponiveis -->
             <xs:element name="DocksDisp" type="xs:int" />
-            <!-- quantidade de nome do local -->
+            <!-- nome do local -->
             <xs:element name="localName" type="xs:string" />
-            <!-- quantidade de latitude -->
+            <!-- pais -->
+            <xs:element name="pais" type="xs:string" />
+            <!-- provincia -->
+            <xs:element name="provincia" type="xs:string" />
+            <!-- municipio -->
+            <xs:element name="municipio" type="xs:string" />
+            <!-- distrito -->
+            <xs:element name="distrito" type="xs:string" />
+            <!-- avenida -->
+            <xs:element name="avenida" type="xs:string" />
+            <!-- latitude -->
             <xs:element name="latitude" type="xs:float" />
-            <!-- quantidade de longitude -->
+            <!-- longitude -->
             <xs:element name="longitude" type="xs:float" />
+            <!-- distância -->
+            <xs:element name="distancia" type="xs:int" />
         </xs:sequence>
     </xs:complexType>
 

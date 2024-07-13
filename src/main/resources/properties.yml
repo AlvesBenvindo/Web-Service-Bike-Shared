@@ -1,0 +1,27 @@
+# devtools:
+#   restart:
+#     enabled: true
+#   livereload:
+#     enabled: true
+# logging:
+#   level:
+#     org.springframework: DEBUG
+#     com.dam.baikshred: DEBUG
+# server:
+#   port: 8088
+# spring:
+#   datasource:
+#     url: jdbc:mysql://localhost:3306/baikshared
+#     username: root
+#     password:
+#   jpa:
+#     hibernate:
+#       ddl-auto: update
+#     show-sql: true
+#     properties:
+#       hibernate:
+#         format_sql: true
+
+opencage:
+  api:
+    key: 59f599ddccdf4708802a81a11f9920bb

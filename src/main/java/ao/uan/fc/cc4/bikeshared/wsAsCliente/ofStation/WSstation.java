@@ -1,5 +1,7 @@
 package ao.uan.fc.cc4.bikeshared.wsAsCliente.ofStation;
 
+import org.springframework.stereotype.Component;
+
 // import org.slf4j.Logger;
 // import org.slf4j.LoggerFactory;
 
@@ -17,7 +19,7 @@ import xml.soap.DeleteDockResponse;
 import xml.soap.GetStationRequest;
 import xml.soap.GetStationResponse;
 
-
+@Component
 public class WSstation extends WebServiceGatewaySupport {
 
     // private static final Logger log = LoggerFactory.getLogger(StationClient.class);

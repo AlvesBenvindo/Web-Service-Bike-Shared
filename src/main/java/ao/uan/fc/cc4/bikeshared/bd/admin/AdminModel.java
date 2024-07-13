@@ -23,8 +23,9 @@ public class AdminModel {
     protected String bi;
     @Column(name = "telefone", unique = true, nullable = false)
     protected  String telefone;
+    @Column(name = "papel", unique = true, nullable = false)
+    protected  String papel;
     @Column(name = "userId")
     protected Long userId;
 
-    
 }

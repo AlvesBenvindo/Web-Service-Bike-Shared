@@ -54,9 +54,21 @@ public class StationEndPoint {
      */
     @PayloadRoot(namespace= NAMESPACE_URI, localPart = "AllStationRequest")
     @ResponsePayload
-    public AllStationResponse getAllUsers (@RequestPayload AllStationRequest request) {
+    public AllStationResponse getAllStations (@RequestPayload AllStationRequest request) {
         System.out.println("Entrando no serviço add Station");
         return stationService.getAllStations(request);
+    }
+
+    /**
+     *
+     * @param request
+     * @return
+     */
+    @PayloadRoot(namespace= NAMESPACE_URI, localPart = "AllStationMoreProximeRequest")
+    @ResponsePayload
+    public AllStationResponse getAllStationsMoreProxime (@RequestPayload AllStationMoreProximeRequest request) {
+        System.out.println("Entrando no serviço add Station");
+        return stationService.getAllStationMoreProxime(request);
     }
 
     @PayloadRoot(namespace= NAMESPACE_URI, localPart = "UpBikeRequest")

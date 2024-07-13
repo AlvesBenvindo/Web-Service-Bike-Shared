@@ -18,8 +18,6 @@ public class SessionModel {
     private Long id;
     @Column(name = "token", unique = true, nullable = false)
     protected String token;
-    @Column(name = "fingerPrint", unique = true)
-    protected String fingerPrint;
     @Column(name = "user", unique = true)
     protected Long user;
     @Temporal(TemporalType.DATE)

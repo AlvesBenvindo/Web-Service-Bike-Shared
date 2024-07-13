@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 
 @Configuration
-public class StationConfiguration {
+public class ConfigStation {
 
     @Value("${station.uri.port}")
     private String stationPort;
