@@ -42,10 +42,10 @@ Todos os métodos das Estações:
 ## Links para as outras aplicações
 
 **#Aplicação Web** 
-([Repositio](https://github.com/mannuelst/bs-admin)
+([Repositório](https://github.com/mannuelst/bs-admin)
 
 **#Aplicação Móvel** 
-([Repositio](https://github.com/AlvesBenvindo/BikeShared)
+([Repositório](https://github.com/AlvesBenvindo/BikeShared)
 
 ### 🚀 Como preparar o ambiente para o projeto
 
