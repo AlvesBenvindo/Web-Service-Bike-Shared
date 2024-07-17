@@ -5,7 +5,37 @@
 ### com a linguagem de programação JAVA e Framework Spring Boot
 
 ## Funcionalidades Exigidas
-### Por descrever...
+### 
+.editar perfil - feito admin/ciclista
+.registar utilizador - feito
+.obter informação do admin/ciclista - feito
+.consultar saldo - feito
+.listar estações - feito
+.listar estações mais próximas (dentro de um raio) - feito
+.fechar Chat - feito
+.obter informação estação - feito
+.levantar bicicleta - feito
+.entregar bicicleta - feito
+.adicionar doca - feito
+.eliminar doca - feito
+.transferir pontos - feito
+.enviar mensagem - feito
+.carregar histórico - quase
+.listar trajetórias - quase
+.guardar trajetória - quase
+.ativar utilizador - em questão
+
+Todos os métodos das Estações:
+.obter informação estação - feito
+.levantar bicicleta - feito
+.entregar bicicleta - feito
+.registar-se no UDDI
+.operações auxiliares/admin para as estações:
+..adicionar doca - feito
+..eliminar doca - feito
+..test_ping - quase
+..test_clear - quase
+
 
 ##
 
