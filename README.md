@@ -50,7 +50,7 @@ ou
 
 ## Tecnologias
 
- - ([Criar Projecto em SpringBoot](https://start.spring.io/)
+ - [Criar Projecto em SpringBoot](https://start.spring.io/)
  - [Marshaller](https://docs.oracle.com/javase/8/docs/api/javax/xml/bind/Marshaller.html)
  - [JwT - Json Web Token](https://jwt.io/introduction)
 
