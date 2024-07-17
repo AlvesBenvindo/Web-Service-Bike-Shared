@@ -12,65 +12,47 @@
 ## Links para as outras aplicações
 
 **#Aplicação Web** 
-([Repositio](https://reactnative.dev/)
+([Repositio](https://github.com/mannuelst/bs-admin)
 
+**#Aplicação Móvel** 
+([Repositio](https://github.com/AlvesBenvindo/BikeShared)
 
-**#Servidor** 
-([Repositio](https://reactnative.dev/)
-
-### 🚀 Como executar o projeto
+### 🚀 Como preparar o ambiente para o projeto
 
 ## Pré-Requisitos
 
-Antes de começar, você vai precisar ter instalado em sua máquina as seguintes ferramentas: 
-[Git](https://git-scm.com/doc), [JAVA](https://nodejs.org/en), [MYSQL](https://developer.android.com/studio?gclid=Cj0KCQiAwP6sBhDAARIsAPfK_wavHb3bNo2iFlexYJAK7CsvMBML7ufVHISCVEqWZ-qiTbmNsrA-Vy4aAjFCEALw_wcB&gclsrc=aw.ds&hl=pt-br) caso esteja a usar uma máquina com um sistema diferente do IOS, e [Xcode](https://developer.apple.com/xcode/) caso esteja a usar um MAC.
+## 1-Ter internet:
+### Para poder instalar as dependências colocadas no projecto
+
+## 2-Antes de começar, você vai precisar ter instalado em sua máquina as seguintes ferramentas: 
+[Git](https://git-scm.com/doc), [JDK-11 ou superior](https://www.oracle.com/ae/java/technologies/downloads/), [MAVEN](https://maven.apache.org/), [MYSQL-8](https://www.mysql.com/downloads/)
 
 
-Além disto é bom ter um editor para trabalhar com o código como [Vscode](https://code.visualstudio.com/)
+## 3-Além disto:
+### É bom ter um editor para trabalhar com o código como [Vscode](https://code.visualstudio.com/)
 
-
+Para executar
 Clone o projeto
 
 ```bash
   git clone https://github.com/AlvesBenvindo/BikeShared.git
 ```
 
-Entre no diretório do projeto
-
+Baixe a extensão directamente no VS-Code:
 ```bash
-  cd BikeShared
-```
-
-Instale as dependências
-
-```bash
-  npm install
+  Extension Pack for Java
 ```
 ou
-
 ```bash
-  yarn add
-```
-
-Inicie o servidor
-
-```bash
-  npx react-native start
+  Aceda este link - https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack
 ```
 
 
 ## Tecnologias
 
-**#Mobile** ([React Native](https://reactnative.dev/) +  [Typecript](https://www.typescriptlang.org/))
-
- - [Google Fonts/POppis](https://fonts.google.com/specimen/Poppins)
- - [React Native Icons](https://github.com/oblador/react-native-vector-icons)
- - [React Native Maps](https://github.com/react-native-maps/react-native-maps)
- - [React Native Direction](https://github.com/bramus/react-native-maps-directions)
- - [React Native Geolocation](https://github.com/michalchudziak/react-native-geolocation)
- - [Axios](https://axios-http.com/)
- - [React Native Wifi Reborn](https://github.com/JuanSeBestia/react-native-wifi-reborn)
- - [React Navigation](https://reactnavigation.org/) e seus componentes adicionais
+ - ([Criar Projecto em SpringBoot](https://start.spring.io/)
+ - [Marshaller](https://docs.oracle.com/javase/8/docs/api/javax/xml/bind/Marshaller.html)
+ - [JwT - Json Web Token](https://jwt.io/introduction)
 
 
 
