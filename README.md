@@ -1,11 +1,11 @@
 
-### Repositório do projecto do Web Service "Bike Shared"
+# Repositório do projecto do Web Service "Bike Shared"
 
-# Este repositório contém de um web service feito
-# com a linguagem de programação JAVA e Framework Spring Boot
+### Este repositório contém de um web service feito
+### com a linguagem de programação JAVA e Framework Spring Boot
 
 ## Funcionalidades Exigidas
-# Por descrever...
+### Por descrever...
 
 ##
 
