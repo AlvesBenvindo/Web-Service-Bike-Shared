@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:tns="http://uddi.soap.xml"
+	targetNamespace="http://uddi.soap.xml"
+	elementFormDefault="qualified"
+>
+
+  <!-- Definição da requisição de registro de serviço" -->
+  <xs:element name="RegistrerServiceRequest">
+    <xs:complexType>
+      <xs:sequence>
+        <!-- name -->
+        <xs:element name="name" type="xs:string" />
+        <!-- dns do serviço -->
+        <xs:element name="endpoint" type="xs:string" />
+        <!-- latitude -->
+        <xs:element name="latitude" type="xs:float" />
+        <!-- longitude -->
+        <xs:element name="longitude" type="xs:float" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+
+  <!-- Definição da requisição de registro de serviço" -->
+  <xs:element name="RegistrerServiceResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <!-- estado -->
+        <xs:element name="estado" type="xs:boolean" />
+        <!-- mensagem -->
+        <xs:element name="mensagem" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="GetServicesRequest">
+    <xs:complexType>
+      <xs:sequence>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="ServiceType">
+    <xs:sequence>
+        <!-- name -->
+        <xs:element name="name" type="xs:string" />
+        <!-- dns do serviço -->
+        <xs:element name="endpoint" type="xs:string" />
+        <!-- latitude -->
+        <xs:element name="latitude" type="xs:float" />
+        <!-- longitude -->
+        <xs:element name="longitude" type="xs:float" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- definition of user Service -->
+  <xs:element name="ServicesListResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <!-- retorno da confirmação da inserção -->
+        <xs:element name="estado" type="xs:boolean" />
+        <!-- mensagem do estado -->
+        <xs:element name="mensagem" type="xs:string" />
+        <xs:element name="serviceItem" type="tns:ServiceType" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

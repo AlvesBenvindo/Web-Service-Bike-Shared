@@ -1,7 +1,7 @@
 package ao.uan.fc.cc4.bikeshared.bd.message;
 
 import ao.uan.fc.cc4.bikeshared.bd.user.UserModel;
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,7 +26,6 @@ public class MessageModel {
     @Column(name = "receptorId")
     protected Long receptorId;
 
-    @Temporal(TemporalType.DATE)
     @Column(name = "createdAt")
     private Timestamp createdAt;
 

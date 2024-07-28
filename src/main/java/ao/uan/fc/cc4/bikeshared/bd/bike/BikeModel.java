@@ -1,6 +1,6 @@
 package ao.uan.fc.cc4.bikeshared.bd.bike;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 

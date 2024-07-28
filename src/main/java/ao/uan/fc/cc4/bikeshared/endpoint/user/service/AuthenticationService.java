@@ -48,20 +48,29 @@ public class AuthenticationService {
         UserResponse response = new UserResponse();
         UserModel user = userRepo.findByEmail(request.getEmail());
         if (user != null) {
+            System.out.println("findByUser");
             SessionModel sessionModel = sessionRepo.findByUser(user.getId());
             if (sessionModel != null) {
+                System.out.println("deleteById");
                 sessionRepo.deleteById(sessionModel.getId());
+                System.out.println("deleteById-end");
             }else if(user.getTipo()==2){
-                // sessionModel = sessionRepo.findByFingerPrint(request.getFingerPrint());
-                // if (sessionModel != null) {
-                //     sessionRepo.deleteById(sessionModel.getId());
-                // }
+                /*sessionModel = sessionRepo.findByFingerPrint(request.getFingerPrint());
+                if (sessionModel != null) {
+                    sessionRepo.deleteById(sessionModel.getId());
+                }*/
             }
+            System.out.println("verificando password");
             if (user.getPassword().equals(HashPassword.hashing(request.getPassword()))) {
+                System.out.println("verificando password - sucesso");
                 SessionModel session = new SessionModel();
+                System.out.println("verificando password - sucesso");
                 session.setToken(jwtToken.generateToken(user.getEmail(), user.getTipo()));
+                System.out.println("verificando password - sucesso");
                 session.setUser(user.getId());
+                System.out.println("verificando password - sucesso");
                 sessionRepo.save(session);
+                System.out.println("verificando password - sucesso");
 
                 BeanUtils.copyProperties(user, response);
                 response.setToken(session.getToken());

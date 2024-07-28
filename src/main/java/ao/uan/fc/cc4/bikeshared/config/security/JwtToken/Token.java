@@ -27,16 +27,21 @@ public class Token {
     /*
      * Método para determinar o tempo de expiração
      */
-    private Instant generateExpirationTime (Integer tipo) {
+    private Date generateExpirationTime (Integer tipo) {
+
         Integer hour = (tipo == 1)? 2 : 24;
-        return LocalDateTime.now().plusHours(hour).toInstant(ZoneOffset.of("+1"));
+        Date dataExp = Date.from(LocalDateTime.now().plusHours(hour).toInstant(ZoneOffset.of("+1")));
+
+        return dataExp;
     }
 
     /*
      * Método que gera o algoritmo
      */
     public String generateToken(String email, Integer tipo) {
+        System.out.println("gerando token");
         try {
+            System.out.println("gerando token");
 
             return JWT.create()
                     .withIssuer("server")

@@ -8,7 +8,7 @@ import org.springframework.web.client.RestTemplate;
 public class ConfigJOpenCage {
 
     @Bean
-    public RestTemplate restTemplate() {
+    public RestTemplate restTemplate333() {
         return new RestTemplate();
     }
     

@@ -1,6 +1,6 @@
 package ao.uan.fc.cc4.bikeshared.bd.user;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -30,6 +30,5 @@ public class UserModel implements Serializable {
     protected String foto;
     @Column(name = "tipo", nullable = false)
     protected int tipo;
-
 
 }

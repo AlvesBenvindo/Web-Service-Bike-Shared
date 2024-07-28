@@ -1,7 +1,7 @@
 package ao.uan.fc.cc4.bikeshared.bd.aquisicaoBike;
 
 import java.sql.Timestamp;
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,7 +22,6 @@ public class AquisicaoBikeModel {
   @Column(name = "ciclistaId")
   private Long ciclistaId;
 
-  @Temporal(TemporalType.DATE)
   @Column(name = "createdAt")
   private Timestamp createdAt;
 

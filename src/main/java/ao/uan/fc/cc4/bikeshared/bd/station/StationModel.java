@@ -1,6 +1,6 @@
 package ao.uan.fc.cc4.bikeshared.bd.station;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -32,7 +32,7 @@ public class StationModel {
     protected Float latitude;
     @Column(name = "longitude")
     protected Float longitude;
-    @Temporal(TemporalType.DATE)
+
     @Column(name = "createdAt")
     private Timestamp createdAt;
     

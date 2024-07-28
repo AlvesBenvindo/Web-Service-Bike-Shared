@@ -1,7 +1,7 @@
 package ao.uan.fc.cc4.bikeshared.bd.historico;
 
 import ao.uan.fc.cc4.bikeshared.bd.ciclista.CiclistaModel;
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,7 +28,6 @@ public class HistoricModel {
     @Column(name = "longitude")
     protected Float longitude;
 
-    @Temporal(TemporalType.DATE)
     @Column(name = "createdAt")
     private Timestamp createdAt;
 

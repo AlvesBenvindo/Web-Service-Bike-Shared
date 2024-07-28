@@ -1,6 +1,6 @@
 package ao.uan.fc.cc4.bikeshared.bd.ciclista;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,7 +25,6 @@ public class CiclistaModel {
     @Column(name = "userId")
     protected Long userId;
 
-    @Temporal(TemporalType.DATE)
     @Column(name = "createdAt")
     private Timestamp createdAt;
 

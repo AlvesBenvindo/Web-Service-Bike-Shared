@@ -1,6 +1,6 @@
 package ao.uan.fc.cc4.bikeshared.bd.session;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,7 +20,7 @@ public class SessionModel {
     protected String token;
     @Column(name = "user", unique = true)
     protected Long user;
-    @Temporal(TemporalType.DATE)
+
     @Column(name = "createdAt")
     private Timestamp createdAt;
 
