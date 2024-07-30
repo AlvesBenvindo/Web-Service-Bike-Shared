@@ -11,8 +11,7 @@ import org.springframework.stereotype.Service;
 import xml.soap.user.*;
 
 import java.util.List;
-import java.util.Optional;
-
+import java.util.Optional;  
 
 @Service
 public class UserService {
@@ -29,31 +28,20 @@ public class UserService {
     // private String headMensagem;
 
     public UserResponse addUserAdmin (AddUserRequest request) {
-
-        UserModel superadmin = userRepo.findByNome("admin");
-		if (superadmin == null) {
-			superadmin = new UserModel();
-			superadmin.setEmail("admin@gmail.com");
-			superadmin.setNome("admin");
-			superadmin.setSobrenome("admin");
-			superadmin.setPassword(HashPassword.hashing("admin"));
-			superadmin.setGenero("F");
-			superadmin.setFoto(null);
-            userRepo.save(superadmin);
-		}
-
         System.out.println("Dentro do Serviço de cadastro de user ");
+            System.out.println("Benvindo - Alves");
         UserResponse response = new UserResponse();
         if (!auth.sessionIsValid(request.getHeader().getAuthToken())) {
             //this.DestilaHeadResponse(session);
             response.setEstado(false);
             response.setMensagem("Token inválido, undefined!");
+            response.setStateCode(401);
         }else{
             /*
              * Verificando se o utilizador já existe
              */
-            UserModel userModel = userRepo.findByEmail(request.getBody().getEmail());
-            if (userModel != null) {
+            UserModel user = userRepo.findByEmail(request.getBody().getEmail());
+            if (user != null) {
                 response.setEstado(false);
                 response.setMensagem("Utilizador já existe, tente outro email ou outro Email ou BI!!!");
                 return response;
@@ -61,14 +49,22 @@ public class UserService {
             /*
              * Fim da verificação
              */
-            userModel = new UserModel();
-            BeanUtils.copyProperties(request.getBody(), userModel);
+            UserModel userModel = new UserModel();
+            userModel.setEmail(request.getBody().getEmail());
+            userModel.setFoto(request.getBody().getFoto());
+            userModel.setGenero(request.getBody().getGenero());
+            userModel.setNome(request.getBody().getNome());
+            userModel.setSobrenome(request.getBody().getSobrenome());
+            userModel.setTipo(request.getBody().getTipo());
             userModel.setPassword(HashPassword.hashing(request.getBody().getPassword()));
+            // BeanUtils.copyProperties(request.getBody(), userModel);
             userModel = userRepo.save(userModel);
 
             AdminModel admin = new AdminModel();
             admin.setUserId(userModel.getId());
-            BeanUtils.copyProperties(request.getBody(), admin);
+            admin.setRole(request.getBody().getRole());
+            admin.setBi(request.getBody().getBi());
+            admin.setTelefone(request.getBody().getTelefone());
             adminRepo.save(admin);
 
             response.setEstado(true);
@@ -85,6 +81,7 @@ public class UserService {
             //this.DestilaHeadResponse(session);
             response.setEstado(false);
             response.setMensagem("Token inválido, undefined!");
+            response.setStateCode(401);
         }else {
             Optional<UserModel> userOp = userRepo.findById(request.getBody().getUserId());
             if (userOp.isPresent() && userOp.get().getTipo()==1) {
@@ -107,6 +104,7 @@ public class UserService {
             //this.DestilaHeadResponse(session);
             response.setEstado(false);
             response.setMensagem("Token inválido, undefined!");
+            response.setStateCode(401);
         }else{
             List<UserModel> userList = userRepo.findAll();
             if (!userList.isEmpty()) {

@@ -4,7 +4,7 @@ import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.sql.Timestamp;
+// import java.sql.Timestamp;
 
 @Entity
 @Table(name = "stations")
@@ -32,8 +32,9 @@ public class StationModel {
     protected Float latitude;
     @Column(name = "longitude")
     protected Float longitude;
-
     @Column(name = "createdAt")
-    private Timestamp createdAt;
+    private String createdAt;
+    @Column(name = "state", nullable = true)
+    private int state;
     
 }

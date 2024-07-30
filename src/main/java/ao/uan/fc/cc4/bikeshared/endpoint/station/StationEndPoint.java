@@ -20,14 +20,16 @@ public class StationEndPoint {
 
     private static final String NAMESPACE_URI = "http://station.soap.xml";
 
-    @Autowired
+    @Autowired(required = true)
     private StationService stationService;
 
-    /**
-     * 
-     * @param request
-     * @return
-     */
+    @PayloadRoot(namespace= NAMESPACE_URI, localPart = "TestStationRequest")
+	@ResponsePayload
+    public TestStationResponse testStation (@RequestPayload TestStationRequest request) {
+        System.out.println("Entrando no serviço de checkin de estação");
+		return stationService.testStation(request);
+    }
+
     @PayloadRoot(namespace= NAMESPACE_URI, localPart = "GetStationDetailsRequest")
 	@ResponsePayload
     public GetStationDetailsResponse getStation (@RequestPayload GetStationDetailsRequest request) {
@@ -35,11 +37,6 @@ public class StationEndPoint {
 		return stationService.getStation(request);
     }
 
-    /**
-     * 
-     * @param request
-     * @return
-     */
     @PayloadRoot(namespace= NAMESPACE_URI, localPart = "AddStationRequest")
 	@ResponsePayload
     public StationResponse addStation (@RequestPayload AddStationRequest request) {
@@ -47,11 +44,6 @@ public class StationEndPoint {
 		return stationService.addStation(request);
     }
 
-    /**
-     *
-     * @param request
-     * @return
-     */
     @PayloadRoot(namespace= NAMESPACE_URI, localPart = "AllStationRequest")
     @ResponsePayload
     public AllStationResponse getAllStations (@RequestPayload AllStationRequest request) {
@@ -59,11 +51,6 @@ public class StationEndPoint {
         return stationService.getAllStations(request);
     }
 
-    /**
-     *
-     * @param request
-     * @return
-     */
     @PayloadRoot(namespace= NAMESPACE_URI, localPart = "AllStationMoreProximeRequest")
     @ResponsePayload
     public AllStationResponse getAllStationsMoreProxime (@RequestPayload AllStationMoreProximeRequest request) {

@@ -20,7 +20,8 @@ public class SessionModel {
     protected String token;
     @Column(name = "user", unique = true)
     protected Long user;
-
+    @Column(name = "fingerprint", unique = true)
+    protected String fingerprint;
     @Column(name = "createdAt")
     private Timestamp createdAt;
 

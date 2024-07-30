@@ -1,6 +1,5 @@
 package ao.uan.fc.cc4.bikeshared.bd.message;
 
-import ao.uan.fc.cc4.bikeshared.bd.user.UserModel;
 import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

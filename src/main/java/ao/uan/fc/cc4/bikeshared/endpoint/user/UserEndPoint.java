@@ -74,9 +74,9 @@ public class UserEndPoint {
 		return ciclistaService.addCiclista(request);
 	}
 
-	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "CiclistaIdRequest")
+	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "GetCiclistaRequest")
 	@ResponsePayload
-	public CiclistaResponse getCiclista (@RequestPayload CiclistaIdRequest request) {
+	public CiclistaResponse getCiclista (@RequestPayload GetCiclistaRequest request) {
 		System.out.println("Entrando no serviço getCiclista");
 		return ciclistaService.getCiclista(request);
 	}
@@ -123,11 +123,25 @@ public class UserEndPoint {
 		return ciclistaService.sendMessage(request);
     }
 
+    @PayloadRoot(namespace= NAMESPACE_URI, localPart = "AllMessagesRequest")
+	@ResponsePayload
+    public AllMessagesResponse loadMessages (@RequestPayload AllMessagesRequest request) {
+        System.out.println("Entrando no serviço de envio de mensagens");
+		return ciclistaService.loadMessages(request);
+    }
+
     @PayloadRoot(namespace= NAMESPACE_URI, localPart = "CloseChatRequest")
 	@ResponsePayload
     public CloseChatResponse sendMessage (@RequestPayload CloseChatRequest request) {
         System.out.println("Entrando no serviço de envio de mensagens");
 		return ciclistaService.closeChat(request);
+    }
+
+    @PayloadRoot(namespace= NAMESPACE_URI, localPart = "HistoricTrajectRequest")
+	@ResponsePayload
+    public HistoricTrajectResponse getHistoricTraject (@RequestPayload HistoricTrajectRequest request) {
+        System.out.println("Entrando no serviço de carregamento de histórico de trajectória");
+		return ciclistaService.getHistoricTraject(request);
     }
 
 }

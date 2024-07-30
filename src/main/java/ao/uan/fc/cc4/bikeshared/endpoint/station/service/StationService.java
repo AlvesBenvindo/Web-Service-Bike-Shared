@@ -19,6 +19,7 @@ import ao.uan.fc.cc4.bikeshared.utils.GeoLocationDTO;
 import ao.uan.fc.cc4.bikeshared.utils.Utils;
 import ao.uan.fc.cc4.bikeshared.wsAsCliente.ofJOpenCage.ServiceGeoLocation;
 import ao.uan.fc.cc4.bikeshared.wsAsCliente.ofStation.WSstation;
+import ao.uan.fc.dam.ws.uddi.UDDINaming;
 import ao.uan.fc.cc4.bikeshared.bd.station.StationModel;
 import xml.soap.station.*;
 import xml.soap.AddDockResponse;
@@ -33,7 +34,9 @@ public class StationService {
     @Autowired
     private WSstation stationClient;
     @Autowired
-    AuthenticationService auth;
+    private AuthenticationService auth;
+    @Autowired
+    private Utils utils;
     @Autowired(required = true)
     private StationRepository stationRepo;
     @Autowired(required = true)
@@ -42,20 +45,125 @@ public class StationService {
     private AquisicaoBikeRepository aquisicicaoRepo;
     @Autowired(required = true)
     private ServiceGeoLocation geoLocationService;
+    @Autowired(required = true)
+    private UDDINaming juddiService;
+
+    public TestStationResponse testStation (TestStationRequest request) {
+
+        System.out.println("Dentro do Serviço de checkin de estação: " + request.getBody().getId());
+        TestStationResponse response = new TestStationResponse();
+        if (!auth.sessionIsValid(request.getHeader().getAuthToken())) {
+            //this.DestilaHeadResponse(session);
+            response.setEstado(false);
+            response.setMensagem("Token inválido, undefined!");
+            response.setStateCode(401);
+        }else {
+            Optional<StationModel> station = stationRepo.findById(request.getBody().getId());
+            System.out.println(578698797);
+            if(station.isPresent()) {
+                try{
+                    GetStationResponse gsr = stationClient.getStationState(station.get().getEndpoint());
+                    if (gsr != null) {
+                        station.get().setState(1);
+                        stationRepo.save(station.get());
+                        response.setEstado(true);
+                        response.setMensagem("Estação activa!!!");
+                    } else {
+                        station.get().setState(0);
+                        stationRepo.save(station.get()); 
+                        response.setEstado(false);
+                        response.setMensagem("Estação inactiva!!!");
+                    }
+                } catch (Exception e) { // Catch any unexpected exceptions
+                    station.get().setState(0);
+                    stationRepo.save(station.get());
+                    response.setEstado(false);
+                    response.setMensagem("Estação inactiva!!!");
+                }
+            } else {
+                response.setEstado(false);
+                response.setMensagem("Estação não foi encontrada");
+            }
+        }
+        return response;
+    }
 
     public StationResponse addStation (AddStationRequest request) {
-
-        System.out.println("Dentro do Serviço "+ request.getBody().getEndpoint());
+        System.out.println("Dentro do Serviço de registro de novas estações!!! ");
         StationResponse response = new StationResponse();
-        System.out.println(request.getBody().getLocalName()+": "+request.getBody().getLatitude()+": "+request.getBody().getLongitude());
-        StationModel stationModel = new StationModel();
-        BeanUtils.copyProperties(request.getBody(), stationModel);
-        stationRepo.save(stationModel);
-
-        BeanUtils.copyProperties(stationModel, response);
-        response.setEstado(true);
-        response.setMensagem("Estação adicionado com sucesso!!!");
-
+        GetStationResponse gsr = null;
+        StationModel station = null;
+        boolean control = false;
+        boolean pmu = false; //esta variável confirma que pelo menos uma estação foi encontrada no uddi
+        int i = (stationRepo.findAll().size() * 3)/2;
+        try {
+            while (i > 0) {
+                String url = juddiService.lookup("CXX_Station" + i);
+                if (url != null) {
+                    pmu = true;
+                    System.out.println(i);
+                    try{
+                        gsr = stationClient.getStationState(url);
+                        if (gsr != null) {
+                            response.setEstado(true);
+                            if (stationRepo.existsByEndpoint(url)) {
+                                station = stationRepo.findByEndpoint(url);
+                                System.out.println("XXXXXXXXX "+gsr.getName());
+                                station.setBonus(gsr.getBonus());
+                                station.setLatitude(gsr.getLatitude());
+                                station.setLongitude(gsr.getLongitude());
+                                station.setLocalName(gsr.getLocalName());
+                                station.setName(gsr.getName());
+                                station.setQtdDocks(gsr.getDockItem().size());
+                                station.setState(1);
+                                int qtdDispo = 0;
+                                for (xml.soap.DockType dock : gsr.getDockItem()) {
+                                    if (dock.getState() == 0) qtdDispo++;
+                                }
+                                station.setQtdDocksDispo(qtdDispo);
+                                stationRepo.save(station);
+                            } else {
+                                System.out.println("Qualquer coisa!!!");
+                                control = true;
+                                station = new StationModel();
+                                System.out.println("XXXXXXXXX "+gsr.getName());
+                                station.setBonus(gsr.getBonus());
+                                station.setLatitude(gsr.getLatitude());
+                                station.setLongitude(gsr.getLongitude());
+                                station.setLocalName(gsr.getLocalName());
+                                station.setName(gsr.getName());
+                                station.setQtdDocks(gsr.getDockItem().size());
+                                station.setState(1);
+                                int qtdDispo = 0;
+                                for (xml.soap.DockType dock : gsr.getDockItem()) {
+                                    if (dock.getState() == 0) qtdDispo++;
+                                }
+                                station.setQtdDocksDispo(qtdDispo);
+                                stationRepo.save(station);
+                            }
+                        } else {
+                            response.setEstado(false);
+                            response.setMensagem("Estação inactiva!!!");
+                        }
+                    } catch (Exception e) {
+                        response.setEstado(false);
+                        response.setMensagem("Estação inactiva!!!");
+                    }
+                }
+                i--;
+            }
+            if (!pmu) {
+                response.setMensagem("Serviços de estações indisponíveis");
+            } else if (control) {
+                response.setMensagem("Novas estações foram encontradas e adicionadas!!!");
+            } else {
+                response.setMensagem("Estações foram encontradas!!!");
+            }
+        } catch (Exception e) {
+            System.out.println(" JUDDI indisponível !!!");
+            response.setEstado(false);
+            response.setMensagem("Serviços indisponíveis");
+        }
         return response;
     }
 
@@ -68,14 +176,11 @@ public class StationService {
             //this.DestilaHeadResponse(session);
             response.setEstado(false);
             response.setMensagem("Token inválido, undefined!");
+            response.setStateCode(401);
         }else {
             Optional<StationModel> stationModel = stationRepo.findById(request.getBody().getId());
             System.out.println(5786);
             if(stationModel.isPresent()) {
-                // if (stationModel.get().getName().equals("CXX_station1")) System.setProperty("station.uri.port", "8081");
-                // if (stationModel.get().getName().equals("CXX_station2")) System.setProperty("station.uri.port", "8082");
-                // if (stationModel.get().getName().equals("CXX_station3")) System.setProperty("station.uri.port", "8083");
-                // if (stationModel.get().getName().equals("CXX_station4")) System.setProperty("station.uri.port", "8084");
 
                 GetStationResponse gsr = stationClient.getStationState(stationModel.get().getEndpoint());
 
@@ -135,11 +240,13 @@ public class StationService {
     }
 
     public AllStationResponse getAllStations (AllStationRequest request) {
+        System.out.println(request.getHeader().getAuthToken());
         AllStationResponse response = new AllStationResponse();
         if (!auth.sessionIsValid(request.getHeader().getAuthToken())) {
             //this.DestilaHeadResponse(session);
             response.setEstado(false);
             response.setMensagem("Token inválido, undefined!");
+            response.setStateCode(401);
         }else {
             List<StationModel> stationList = stationRepo.findAll();
             if (!stationList.isEmpty()) {
@@ -178,6 +285,7 @@ public class StationService {
             //this.DestilaHeadResponse(session);
             response.setEstado(false);
             response.setMensagem("Token inválido, undefined!");
+            response.setStateCode(401);
         }else {
             List<StationModel> stationList = stationRepo.findAll();
             if (!stationList.isEmpty()) {
@@ -196,6 +304,7 @@ public class StationService {
                         BeanUtils.copyProperties(station, stationType);
                         stationType.setDocks(station.getQtdDocks());
                         stationType.setDocksDisp(station.getQtdDocksDispo());
+                        stationType.setDistancia(distancia.intValue());
 
                         GeoLocationDTO geoLocation = geoLocationService.getGeoLocation(String.valueOf(station.getLatitude()), String.valueOf(station.getLongitude()));
 
@@ -206,7 +315,6 @@ public class StationService {
                             stationType.setMunicipio(geoLocation.getMunicipio());
                             stationType.setDistrito(geoLocation.getDistrito());
                             stationType.setAvenida(geoLocation.getAvenida());
-                            stationType.setDistancia(distancia.intValue());
 
                         }
                         response.getStationItem().add(stationType);
@@ -226,11 +334,13 @@ public class StationService {
          * O valor que representa o levantamento da Bike é 1
          */
         UpBikeResponse response = new UpBikeResponse();
+        response.setEstadoCiclista(0);
+        response.setEstado(false);
 
         if (!auth.sessionIsValid(request.getHeader().getAuthToken())) {
             //this.DestilaHeadResponse(session);
-            response.setEstado(false);
             response.setMensagem("Token inválido, undefined!");
+            response.setStateCode(401);
         }else {
             Optional<CiclistaModel> ciclista = ciclistaRepo.findById(request.getBody().getIdCiclista());
             if (ciclista.isPresent()) {
@@ -267,23 +377,22 @@ public class StationService {
                                     aquisicao.setStation(station.get().getId());
                                     aquisicao.setTipo_aquisicao(1);
                                     aquisicao.setCiclistaId(ciclista.get().getId());
+                                    aquisicao.setCreatedAt(utils.getInstante());
                                     aquisicicaoRepo.save(aquisicao);
+                                    response.setEstadoCiclista(ciclista.get().getState());
                                     response.setEstado(true);
                                     response.setMensagem("Levantamento feito com sucesso");
                                 }
                             } else {
-                                response.setEstado(false);
                                 response.setMensagem("Impossível levantar, ainda não devolveste a última bike que lavantaste!");
                             }
                             //}
                         }
                     });
                 }else{
-                    response.setEstado(false);
                     response.setMensagem("Estação não identificada!");
                 }
             }else{
-                response.setEstado(false);
                 response.setMensagem("Impossível levantar Bike!");
             }
         }
@@ -295,11 +404,12 @@ public class StationService {
          * O valor que representa a devolução da Bike é 2
          */
         DownBikeResponse response = new DownBikeResponse();
+        response.setEstado(false);
 
         if (!auth.sessionIsValid(request.getHeader().getAuthToken())) {
             //this.DestilaHeadResponse(session);
-            response.setEstado(false);
             response.setMensagem("Token inválido, undefined!");
+            response.setStateCode(401);
         }else {
             Optional<CiclistaModel> ciclista = ciclistaRepo.findById(request.getBody().getIdCiclista());
             if (ciclista.isPresent()) {
@@ -317,6 +427,7 @@ public class StationService {
                             //Aqui alteramos o estado do ciclista que está a devolver a bike;
                             if (ciclista.get().getState()==1) {
                                 ciclista.get().setState(0);
+                                ciclista.get().setPoints(ciclista.get().getPoints()+station.get().getBonus());
                                 //Aqui alteramos o estado da doca que terá a Bike
                                 AlterStateDockInDownBikeResponse alteredDock = stationClient.updateDockStateInDownBike(
                                     station.get().getEndpoint(),
@@ -334,23 +445,21 @@ public class StationService {
                                     aquisicao.setStation(station.get().getId());
                                     aquisicao.setTipo_aquisicao(2);
                                     aquisicao.setCiclistaId(ciclista.get().getId());
+                                    aquisicao.setCreatedAt(utils.getInstante());
                                     aquisicicaoRepo.save(aquisicao);
                                     response.setEstado(true);
-                                    response.setMensagem("Devolução feita com sucesso");
+                                    response.setMensagem("Devolução feita com sucesso, recebeste "+station.get().getBonus()+" pontos de bónus!");
                                 }
                             } else {
-                                response.setEstado(false);
                                 response.setMensagem("Impossível devolver, ainda não levantaste uma bike!");
                             }
                             //}
                         }
                     });
                 }else{
-                    response.setEstado(false);
                     response.setMensagem("Estação não identificada!");
                 }
             }else{
-                response.setEstado(false);
                 response.setMensagem("Impossível devolver Bike!");
             }
         }
@@ -364,8 +473,9 @@ public class StationService {
             //this.DestilaHeadResponse(session);
             response.setEstado(false);
             response.setMensagem("Token inválido, undefined!");
+            response.setStateCode(401);
         }else {
-                System.out.println("AQUIIII!");
+
             Optional<StationModel> station = stationRepo.findById(request.getBody().getIdStation());
             if (station.isPresent()) {
                 /*
@@ -393,6 +503,7 @@ public class StationService {
             //this.DestilaHeadResponse(session);
             response.setEstado(false);
             response.setMensagem("Token inválido, undefined!");
+            response.setStateCode(401);
         }else {
             Integer idStation = Utils.extractInteger(request.getBody().getReference().split("_")[0]);
             Optional<StationModel> station = stationRepo.findById(idStation.longValue());

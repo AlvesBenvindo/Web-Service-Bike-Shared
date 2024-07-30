@@ -31,4 +31,5 @@ public class UserModel implements Serializable {
     @Column(name = "tipo", nullable = false)
     protected int tipo;
 
+
 }

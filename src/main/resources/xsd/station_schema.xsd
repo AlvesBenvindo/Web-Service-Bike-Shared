@@ -16,31 +16,9 @@
 
     <xs:element name="AddStationRequest">
         <xs:complexType>
-            <xs:sequence>
-                <xs:element name="Header" type="tns:HeaderType" />
-                <xs:element name="Body">
-                    <xs:complexType>
-                        <xs:sequence>
-                            <!-- name of station -->
-                            <xs:element name="name" type="xs:string" />
-                            <!-- path to station from BikeShared Server -->
-                            <xs:element name="endpoint" type="xs:string" />
-                            <!-- bonus value of station -->
-                            <xs:element name="bonus" type="xs:int" />
-                            <!-- qtd of Docks -->
-                            <xs:element name="qtdDocks" type="xs:int" />
-                            <!-- qtd docks disponiveis -->
-                            <xs:element name="qtdDocksDispo" type="xs:int" />
-                            <!-- quantidade de nome do local -->
-                            <xs:element name="localName" type="xs:string" />
-                            <!-- quantidade de latitude -->
-                            <xs:element name="latitude" type="xs:float" />
-                            <!-- quantidade de longitude -->
-                            <xs:element name="longitude" type="xs:float" />
-                        </xs:sequence>
-                    </xs:complexType>
-                </xs:element>
-            </xs:sequence>
+          <xs:sequence>
+            <xs:element name="Header" type="tns:HeaderType" />
+          </xs:sequence>
         </xs:complexType>
     </xs:element>
 
@@ -97,6 +75,8 @@
                 <xs:element name="estado" type="xs:boolean" />
                 <!-- mensagem do estado -->
                 <xs:element name="mensagem" type="xs:string" />
+                <!-- código de estado -->
+                <xs:element name="stateCode" type="xs:int" />
                 <!-- id -->
                 <xs:element name="id" type="xs:long" />
                 <!-- email -->
@@ -136,6 +116,8 @@
                 <xs:element name="estado" type="xs:boolean" />
                 <!-- mensagem do estado -->
                 <xs:element name="mensagem" type="xs:string" />
+                <!-- código de estado -->
+                <xs:element name="stateCode" type="xs:int" />
                 <!-- id -->
                 <xs:element name="id" type="xs:long" />
                 <!-- email -->
@@ -238,6 +220,8 @@
                 <xs:element name="estado" type="xs:boolean" />
                 <!-- mensagem do estado -->
                 <xs:element name="mensagem" type="xs:string" />
+                <!-- código de estado -->
+                <xs:element name="stateCode" type="xs:int" />
                 <!-- retorno da lista de todas as estações -->
                 <xs:element name="stationItem" type="tns:StationResponseType" maxOccurs="unbounded"/>
             </xs:sequence>
@@ -271,6 +255,10 @@
         <xs:element name="estado" type="xs:boolean" />
         <!-- mensagem do estado -->
         <xs:element name="mensagem" type="xs:string" />
+        <!-- código de estado -->
+        <xs:element name="stateCode" type="xs:int" />
+        <!-- mensagem do estado do ciclista que indica se o ciclista tem(1) ou não(0) uma bike -->
+        <xs:element name="estadoCiclista" type="xs:int" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -302,6 +290,8 @@
         <xs:element name="estado" type="xs:boolean" />
         <!-- mensagem do estado -->
         <xs:element name="mensagem" type="xs:string" />
+        <!-- código de estado -->
+        <xs:element name="stateCode" type="xs:int" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -331,6 +321,8 @@
                 <xs:element name="estado" type="xs:boolean" />
                 <!-- mensagem do estado -->
                 <xs:element name="mensagem" type="xs:string" />
+                <!-- código de estado -->
+                <xs:element name="stateCode" type="xs:int" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -360,6 +352,37 @@
                 <xs:element name="estado" type="xs:boolean" />
                 <!-- mensagem do estado -->
                 <xs:element name="mensagem" type="xs:string" />
+                <!-- código de estado -->
+                <xs:element name="stateCode" type="xs:int" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="TestStationRequest">
+        <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Header" type="tns:HeaderType" />
+              <xs:element name="Body">
+                <xs:complexType>
+                  <xs:sequence>
+                    <!-- id of Station -->
+                    <xs:element name="id" type="xs:long" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="TestStationResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <!-- id of dock -->
+                <xs:element name="estado" type="xs:boolean" />
+                <!-- mensagem do estado -->
+                <xs:element name="mensagem" type="xs:string" />
+                <!-- código de estado -->
+                <xs:element name="stateCode" type="xs:int" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>

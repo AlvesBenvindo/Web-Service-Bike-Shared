@@ -1,11 +1,6 @@
 package ao.uan.fc.cc4.bikeshared.bd.admin;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,8 +18,8 @@ public class AdminModel {
     protected String bi;
     @Column(name = "telefone", unique = true, nullable = false)
     protected  String telefone;
-    @Column(name = "papel", unique = true, nullable = false)
-    protected  String papel;
+    @Column(name = "role", nullable = false)
+    protected  String role;
     @Column(name = "userId")
     protected Long userId;
 
