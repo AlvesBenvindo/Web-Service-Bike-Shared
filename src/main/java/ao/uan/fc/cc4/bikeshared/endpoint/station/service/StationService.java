@@ -18,8 +18,8 @@ import ao.uan.fc.cc4.bikeshared.utils.Coordinates;
 import ao.uan.fc.cc4.bikeshared.utils.GeoLocationDTO;
 import ao.uan.fc.cc4.bikeshared.utils.Utils;
 import ao.uan.fc.cc4.bikeshared.wsAsCliente.ofJOpenCage.ServiceGeoLocation;
+import ao.uan.fc.cc4.bikeshared.wsAsCliente.ofJuddi.JuddiService;
 import ao.uan.fc.cc4.bikeshared.wsAsCliente.ofStation.WSstation;
-import ao.uan.fc.dam.ws.uddi.UDDINaming;
 import ao.uan.fc.cc4.bikeshared.bd.station.StationModel;
 import xml.soap.station.*;
 import xml.soap.AddDockResponse;
@@ -45,8 +45,8 @@ public class StationService {
     private AquisicaoBikeRepository aquisicicaoRepo;
     @Autowired(required = true)
     private ServiceGeoLocation geoLocationService;
-    @Autowired(required = true)
-    private UDDINaming juddiService;
+    @Autowired
+    private JuddiService juddiService;
 
     public TestStationResponse testStation (TestStationRequest request) {
 
@@ -93,76 +93,56 @@ public class StationService {
         StationResponse response = new StationResponse();
         GetStationResponse gsr = null;
         StationModel station = null;
-        boolean control = false;
-        boolean pmu = false; //esta variável confirma que pelo menos uma estação foi encontrada no uddi
-        int i = (stationRepo.findAll().size() * 3)/2;
-        try {
-            while (i > 0) {
-                String url = juddiService.lookup("CXX_Station" + i);
-                if (url != null) {
-                    pmu = true;
-                    System.out.println(i);
-                    try{
-                        gsr = stationClient.getStationState(url);
-                        if (gsr != null) {
-                            response.setEstado(true);
-                            if (stationRepo.existsByEndpoint(url)) {
-                                station = stationRepo.findByEndpoint(url);
-                                System.out.println("XXXXXXXXX "+gsr.getName());
-                                station.setBonus(gsr.getBonus());
-                                station.setLatitude(gsr.getLatitude());
-                                station.setLongitude(gsr.getLongitude());
-                                station.setLocalName(gsr.getLocalName());
-                                station.setName(gsr.getName());
-                                station.setQtdDocks(gsr.getDockItem().size());
-                                station.setState(1);
-                                int qtdDispo = 0;
-                                for (xml.soap.DockType dock : gsr.getDockItem()) {
-                                    if (dock.getState() == 0) qtdDispo++;
-                                }
-                                station.setQtdDocksDispo(qtdDispo);
-                                stationRepo.save(station);
-                            } else {
-                                System.out.println("Qualquer coisa!!!");
-                                control = true;
-                                station = new StationModel();
-                                System.out.println("XXXXXXXXX "+gsr.getName());
-                                station.setBonus(gsr.getBonus());
-                                station.setLatitude(gsr.getLatitude());
-                                station.setLongitude(gsr.getLongitude());
-                                station.setLocalName(gsr.getLocalName());
-                                station.setName(gsr.getName());
-                                station.setQtdDocks(gsr.getDockItem().size());
-                                station.setState(1);
-                                int qtdDispo = 0;
-                                for (xml.soap.DockType dock : gsr.getDockItem()) {
-                                    if (dock.getState() == 0) qtdDispo++;
-                                }
-                                station.setQtdDocksDispo(qtdDispo);
-                                stationRepo.save(station);
-                            }
+        boolean pmr = false; //esta variável confirma que pelo menos uma estação foi encontrada no uddi e registrada
+        List<String> servicos = juddiService.searchStationService();
+        if (servicos != null) {
+            for(String servico : servicos){
+                try{
+                    gsr = stationClient.getStationState(servico);
+                    if (gsr != null) {
+                        response.setEstado(true);
+                        System.out.println(gsr.getName());
+                        if (stationRepo.existsByEndpoint(servico)) {
+                            station = stationRepo.findByEndpoint(servico);
                         } else {
-                            response.setEstado(false);
-                            response.setMensagem("Estação inactiva!!!");
+                            pmr = true;
+                            System.out.println("ok2x");
+                            station = new StationModel();
+                            station.setEndpoint(servico);
                         }
-                    } catch (Exception e) {
-                        response.setEstado(false);
-                        response.setMensagem("Estação inactiva!!!");
+                        station.setBonus(gsr.getBonus());
+                        station.setLatitude(gsr.getLatitude());
+                        station.setLongitude(gsr.getLongitude());
+                        station.setLocalName(gsr.getLocalName());
+                        station.setName(gsr.getName());
+                        station.setQtdDocks(gsr.getDockItem().size());
+                        station.setState(1);
+                        int qtdDispo = 0;
+                        for (xml.soap.DockType dock : gsr.getDockItem()) {
+                            if (dock.getState() == 0) qtdDispo++;
+                        }
+                        station.setQtdDocksDispo(qtdDispo);
+                        System.out.println("abra");
+                        try{
+                            stationRepo.save(station);
+                        } catch (Exception exc) {
+                            System.out.println("Não deu para salvar o registro!!!");
+                        }
+                        System.out.println("cadabra");
+                    } else {
+                        System.out.println("Estação inactiva!!!");
                     }
+                } catch (Exception e) {
+                    System.out.println("Estação inactiva!!!");
                 }
-                i--;
             }
-            if (!pmu) {
-                response.setMensagem("Serviços de estações indisponíveis");
-            } else if (control) {
+            if (pmr) {
                 response.setMensagem("Novas estações foram encontradas e adicionadas!!!");
             } else {
                 response.setMensagem("Estações foram encontradas!!!");
             }
-        } catch (Exception e) {
-            System.out.println(" JUDDI indisponível !!!");
-            response.setEstado(false);
-            response.setMensagem("Serviços indisponíveis");
+        } else {
+            response.setMensagem("Serviços de estações indisponíveis");
         }
         return response;
     }

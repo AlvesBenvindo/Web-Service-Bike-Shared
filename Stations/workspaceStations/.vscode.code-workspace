@@ -1,0 +1,23 @@
+{
+	"folders": [
+		{
+			"path": "../.vscode"
+		},
+		{
+			"path": "../Station1"
+		},
+		{
+			"path": "../Station2"
+		},
+		{
+			"path": "../Station3"
+		},
+		{
+			"path": "../Station4"
+		}
+	],
+	"settings": {
+		"java.compile.nullAnalysis.mode": "automatic",
+		"java.debug.settings.onBuildFailureProceed": true
+	}
+}

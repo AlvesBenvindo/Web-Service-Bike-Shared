@@ -5,9 +5,11 @@ import ao.uan.fc.cc4.bikeshared.bd.station.StationRepository;
 import ao.uan.fc.cc4.bikeshared.bd.user.UserModel;
 import ao.uan.fc.cc4.bikeshared.bd.user.UserRepository;
 import ao.uan.fc.cc4.bikeshared.utils.HashPassword;
+import ao.uan.fc.cc4.bikeshared.wsAsCliente.ofJuddi.JuddiService;
 import ao.uan.fc.cc4.bikeshared.wsAsCliente.ofStation.WSstation;
-import ao.uan.fc.dam.ws.uddi.UDDINaming;
 import xml.soap.GetStationResponse;
+
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -19,8 +21,8 @@ import org.springframework.context.annotation.Profile;
 @SpringBootApplication
 public class BikeSharedApplication {
 
-	@Autowired(required = true)
-	UDDINaming juddiService;
+	@Autowired
+	JuddiService juddiService;
     @Autowired(required = true)
     private UserRepository userRepo;
     @Autowired(required = true)
@@ -52,57 +54,54 @@ public class BikeSharedApplication {
 		return args -> {
 			GetStationResponse gsr = null;
 			StationModel station = null;
-			boolean control = false;
-			boolean pmu = false; //esta variável confirma que pelo menos uma estação foi encontrada no uddi
-			int i = (stationRepo.findAll().size() * 3)/2;
-			try {
-				while (i > 0) {
-					String url = juddiService.lookup("CXX_Station" + i);
-					if (url != null) {
-						pmu = true;
-						try{
-							gsr = stationClient.getStationState(url);
-							if (gsr != null) {
-								if (stationRepo.existsByEndpoint(url)) {
-									station = stationRepo.findByEndpoint(url);
-								} else {
-									station = new StationModel();
-									control = true;
-								}
-								System.out.println("XXXXXXXXX "+station.getEndpoint());
-								station.setBonus(gsr.getBonus());
-								station.setLatitude(gsr.getLatitude());
-								station.setLongitude(gsr.getLongitude());
-								station.setLocalName(gsr.getLocalName());
-								station.setName(gsr.getName());
-								station.setQtdDocks(gsr.getDockItem().size());
-								station.setState(1);
-								int qtdDispo = 0;
-								for (xml.soap.DockType dock : gsr.getDockItem()) {
-									if (dock.getState() == 0) qtdDispo++;
-								}
-								station.setQtdDocksDispo(qtdDispo);
-								stationRepo.save(station);
+			boolean pmr = false; //esta variável confirma que pelo menos uma estação foi encontrada no uddi e registrada
+			List<String> servicos = juddiService.searchStationService();
+			if (servicos != null) {
+				for(String servico : servicos){
+					try{
+						gsr = stationClient.getStationState(servico);
+						if (gsr != null) {
+							if (stationRepo.existsByEndpoint(servico)) {
+								station = stationRepo.findByEndpoint(servico);
 							} else {
-								System.out.println("Estação inactiva inactiva!!!");
+								pmr = true;
+								station = new StationModel();
+								station.setEndpoint(servico);
 							}
-						} catch (Exception e) {
-							System.out.println("Estação inactiva inactiva!!!");
+							station.setBonus(gsr.getBonus());
+							station.setLatitude(gsr.getLatitude());
+							station.setLongitude(gsr.getLongitude());
+							station.setLocalName(gsr.getLocalName());
+							station.setName(gsr.getName());
+							station.setQtdDocks(gsr.getDockItem().size());
+							station.setState(1);
+							int qtdDispo = 0;
+							for (xml.soap.DockType dock : gsr.getDockItem()) {
+								if (dock.getState() == 0) qtdDispo++;
+							}
+							station.setQtdDocksDispo(qtdDispo);
+							System.out.println("abra");
+							try{
+								stationRepo.save(station);
+							} catch (Exception exc) {
+								System.out.println("Não deu paara salvar o registro!!!");
+							}
+							System.out.println("cadabra");
+							stationRepo.save(station);
+						} else {
+							System.out.println("Estação inactiva!!!");
 						}
+					} catch (Exception e) {
+						System.out.println("Estação inactiva!!!");
 					}
-					i--;
 				}
-				
-				if (!pmu) {
-					System.out.println("Serviços de estações indisponíveis");
-				} else if (control) {
+				if (pmr) {
 					System.out.println("Novas estações foram encontradas e adicionadas!!!");
 				} else {
-					System.out.println("Estações foram encontradas!!!");
+					System.out.println("Existem estações disponíveis!!!");
 				}
-			} catch (Exception e) {
-				System.out.println(" JUDDI indisponível !!!");
-				System.out.println("Serviços indisponíveis");
+			} else {
+				System.out.println("Serviços de estações indisponíveis");
 			}
 		};
 	}
