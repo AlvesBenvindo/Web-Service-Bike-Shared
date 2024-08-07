@@ -5,6 +5,8 @@ import ao.uan.fc.cc4.bikeshared.bd.admin.AdminRepository;
 import ao.uan.fc.cc4.bikeshared.bd.user.UserModel;
 import ao.uan.fc.cc4.bikeshared.bd.user.UserRepository;
 import ao.uan.fc.cc4.bikeshared.utils.HashPassword;
+//import ao.uan.fc.cc4.bikeshared.wsAsCliente.ofReplica.WSReplica;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,8 @@ public class UserService {
     private UserRepository userRepo;
     @Autowired(required = true)
     private AdminRepository adminRepo;
+    //@Autowired(required = true)
+    //private WSReplica serverWriter;
 
     // private boolean headEstado;
     // private String headMensagem;
@@ -59,6 +63,7 @@ public class UserService {
             userModel.setPassword(HashPassword.hashing(request.getBody().getPassword()));
             // BeanUtils.copyProperties(request.getBody(), userModel);
             userModel = userRepo.save(userModel);
+            //serverWriter.writeInReplica("user", userRepo.save(userModel).returnString());
 
             AdminModel admin = new AdminModel();
             admin.setUserId(userModel.getId());

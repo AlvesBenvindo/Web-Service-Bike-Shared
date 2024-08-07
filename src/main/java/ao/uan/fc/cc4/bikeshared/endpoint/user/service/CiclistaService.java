@@ -11,8 +11,6 @@ import ao.uan.fc.cc4.bikeshared.bd.aquisicaoBike.AquisicaoBikeModel;
 import ao.uan.fc.cc4.bikeshared.bd.aquisicaoBike.AquisicaoBikeRepository;
 import ao.uan.fc.cc4.bikeshared.bd.ciclista.CiclistaModel;
 import ao.uan.fc.cc4.bikeshared.bd.ciclista.CiclistaRepository;
-import ao.uan.fc.cc4.bikeshared.bd.message.MessageModel;
-import ao.uan.fc.cc4.bikeshared.bd.message.MessageRepository;
 import ao.uan.fc.cc4.bikeshared.bd.session.SessionModel;
 import ao.uan.fc.cc4.bikeshared.bd.session.SessionRepository;
 import ao.uan.fc.cc4.bikeshared.bd.station.StationModel;
@@ -20,26 +18,20 @@ import ao.uan.fc.cc4.bikeshared.bd.station.StationRepository;
 import ao.uan.fc.cc4.bikeshared.bd.user.UserModel;
 import ao.uan.fc.cc4.bikeshared.bd.user.UserRepository;
 import ao.uan.fc.cc4.bikeshared.utils.HashPassword;
+//import ao.uan.fc.cc4.bikeshared.wsAsCliente.ofReplica.WSReplica;
 import xml.soap.user.AddCiclistaRequest;
 import xml.soap.user.AllCiclistasRequest;
-import xml.soap.user.AllMessagesRequest;
-import xml.soap.user.AllMessagesResponse;
 import xml.soap.user.ChegadaType;
 import xml.soap.user.CiclistaListResponse;
 import xml.soap.user.CiclistaResponse;
 import xml.soap.user.CiclistaType;
-import xml.soap.user.CloseChatRequest;
-import xml.soap.user.CloseChatResponse;
 import xml.soap.user.DeleteCiclistaRequest;
 import xml.soap.user.GetCiclistaRequest;
 import xml.soap.user.GetSaldoRequest;
 import xml.soap.user.GetSaldoResponse;
 import xml.soap.user.HistoricTrajectRequest;
 import xml.soap.user.HistoricTrajectResponse;
-import xml.soap.user.MessageType;
 import xml.soap.user.PartidaType;
-import xml.soap.user.SendMessageRequest;
-import xml.soap.user.SendMessageResponse;
 import xml.soap.user.TrajectType;
 import xml.soap.user.TransferPointsRequest;
 import xml.soap.user.TransferPointsResponse;
@@ -53,8 +45,6 @@ public class CiclistaService{
     @Autowired(required = true)
     private CiclistaRepository ciclistaRepo;
     @Autowired(required = true)
-    private MessageRepository messageRepo;
-    @Autowired(required = true)
     private AquisicaoBikeRepository aquisicicaoRepo;
     @Autowired(required = true)
     private StationRepository stationRepo;
@@ -62,6 +52,8 @@ public class CiclistaService{
     private SessionRepository sessionRepo;
     @Autowired
     private AuthenticationService auth;
+    //@Autowired(required = true)
+    //private WSReplica serverWriter;
 
     public CiclistaResponse addCiclista (AddCiclistaRequest request) {
 
@@ -84,12 +76,15 @@ public class CiclistaService{
         BeanUtils.copyProperties(request, userModel);
         userModel.setPassword(HashPassword.hashing(request.getPassword()));
         userModel = userRepo.save(userModel);
+        //serverWriter.writeInReplica("user", userModel.returnString());
         
         CiclistaModel ciclistaModel = new CiclistaModel();
         ciclistaModel.setUserId(userModel.getId());
         ciclistaModel.setPoints(10);
         ciclistaModel.setState(0);
         ciclistaRepo.save(ciclistaModel);
+        //serverWriter.writeInReplica("ciclista", ciclistaRepo.save(ciclistaModel).returnString());
+        
 
         response.setEstado(true);
         response.setMensagem("Utilizador adicionado com sucesso!!!");
@@ -122,23 +117,44 @@ public class CiclistaService{
     }
 
     public CiclistaResponse updateCiclista (UpdateCiclistaRequest request) {
-        CiclistaListResponse response = new CiclistaListResponse();
-        response.setStateCode(200);
-
+        CiclistaResponse response = new CiclistaResponse();
         if (!auth.sessionIsValid(request.getHeader().getAuthToken())) {
             //this.DestilaHeadResponse(session);
-            response.setEstado(false);
             response.setMensagem("Token inválido, undefined!");
             response.setStateCode(401);
         }else {
             System.out.println(12345678);
-            Optional<UserModel> user = userRepo.findById(request.getBody().getId());
-            BeanUtils.copyProperties(request.getBody(), user.get());
-            userRepo.save(user.get());
-            response.setEstado(true);
-            response.setMensagem("Ciclista: "+user.get().getNome()+" "+user.get().getSobrenome()+", seus dados foram actualizados com sucesso");
+            Optional<CiclistaModel> ciclista = ciclistaRepo.findById(request.getBody().getId());
+            if (ciclista.isPresent()) {
+                Optional<UserModel> user = userRepo.findById(ciclista.get().getUserId());
+                if (user.isPresent()) {
+                    //BeanUtils.copyProperties(request.getBody(), user.get());
+                    user.get().setEmail(request.getBody().getEmail());
+                    user.get().setFoto(request.getBody().getFoto());
+                    user.get().setGenero(request.getBody().getGenero());
+                    user.get().setSobrenome(request.getBody().getSobrenome());
+                    user.get().setNome(request.getBody().getNome());
+                    user.get().setPassword(HashPassword.hashing(request.getBody().getPassword()));
+                    userRepo.save(user.get());
+                    //serverWriter.writeInReplica("user", userRepo.save(user.get()).returnString());
+                    response.setEstado(true);
+                    response.setMensagem("Ciclista: "+user.get().getNome()+" "+user.get().getSobrenome()+", seus dados foram actualizados com sucesso");
+                    response.setNome(user.get().getNome());
+                    response.setSobrenome(user.get().getSobrenome());
+                    response.setEmail(user.get().getEmail());
+                    response.setFoto(user.get().getFoto());
+                    response.setGenero(user.get().getGenero());
+                    response.setId(ciclista.get().getId());
+                } else {
+                    response.setMensagem("Ciclista não encontrado!!!");
+                }
+            } else {
+                response.setMensagem("Ciclista não encontrado!!!");
+            }
+            System.out.println("qualquer coisa...");
         }
-        return new CiclistaResponse();
+        System.out.println("actualizou");
+        return response;
     }
 
     public CiclistaResponse deleteCiclista (DeleteCiclistaRequest request) {
@@ -194,6 +210,7 @@ public class CiclistaService{
                         ciclistaType.setCiclistaId(ciclista.getId());
                         ciclistaType.setPoints(ciclista.getPoints());
                         ciclistaType.setState(ciclista.getState());
+                        ciclistaType.setInfo(ciclista.getInfo());
                         response.getCiclista().add(ciclistaType);
                     });
             } else {
@@ -201,7 +218,6 @@ public class CiclistaService{
                 response.setMensagem("User não encontrado!");
             }
         }
-
         return response;
     }
 
@@ -238,110 +254,30 @@ public class CiclistaService{
             if (request.getBody().getReceptorId() != request.getBody().getDoadorId()) {
                 Optional<CiclistaModel> doador = ciclistaRepo.findById(request.getBody().getDoadorId());
                 Optional<CiclistaModel> receptor = ciclistaRepo.findById(request.getBody().getReceptorId());
-                if (doador.isPresent() && receptor.isPresent()) {
+                //if (doador.isPresent() && receptor.isPresent()) {
                     if (doador.get().getPoints() >= request.getBody().getPoints()) {
                         doador.get().setPoints(doador.get().getPoints()-request.getBody().getPoints());
                         receptor.get().setPoints(receptor.get().getPoints()+request.getBody().getPoints());
-                        ciclistaRepo.save(doador.get());
-                        ciclistaRepo.save(receptor.get());
+                        // ciclistaRepo.save(doador.get());
+                        try {
+                            ciclistaRepo.save(doador.get());
+                            //serverWriter.writeInReplica("ciclista", ciclistaRepo.save(doador.get()).returnString());
+                            ciclistaRepo.save(receptor.get());
+                            //serverWriter.writeInReplica("ciclista", ciclistaRepo.save(receptor.get()).returnString());
+                        } catch (Exception e) {
+                            // TODO: handle exception
+                        }
                         response.setEstado(true);
                         response.setMensagem("Pontos transferidos com sucesso!");
                     } else {
                         response.setMensagem("Não tens pontos suficientes!");
                     }
-                } else {
-                    response.setMensagem("Utilizador não encontrado!!");
-                }
+                //} else {
+                //    response.setMensagem("Utilizador não encontrado!!");
+                //}
             } else {
                 response.setMensagem("Impossível transferir pontos!");
             }
-        }
-        return response;
-    }
-
-    public SendMessageResponse sendMessage (SendMessageRequest request) {
-        SendMessageResponse response = new SendMessageResponse();
-        if (!auth.sessionIsValid(request.getHeader().getAuthToken())) {
-            //this.DestilaHeadResponse(session);
-            response.setEstado(false);
-            response.setMensagem("Token inválido, undefined!");
-            response.setStateCode(401);
-        }else {
-            Optional<CiclistaModel> emissor = ciclistaRepo.findById(request.getBody().getEmissorId());
-            SessionModel sessao = sessionRepo.findByFingerprint(request.getBody().getMac());
-            if ( sessao != null ){
-                CiclistaModel receptor = ciclistaRepo.findByUserId(sessao.getUser());
-                if (emissor.isPresent() && receptor != null && request.getBody().getMac().equals(sessao.getFingerprint())) {
-                    //Guardando a mensagem
-                    MessageModel message = new MessageModel();
-                    message.setEmissorId(emissor.get().getId());
-                    message.setReceptorId(receptor.getId());
-                    message.setMessage(request.getBody().getMessage());
-                    messageRepo.save(message);
-                    response.setEstado(true);
-                    response.setMensagem("Mensagem enviada com sucesso!");
-                } else {
-                    response.setEstado(false);
-                    response.setMensagem("Utilizador não encontrado!");
-                }
-            } else {
-                response.setEstado(false);
-                response.setMensagem("Impossível enviar mensagem!");
-            }
-        }
-        return response;
-    }
-
-    public CloseChatResponse closeChat (CloseChatRequest request) {
-        CloseChatResponse response = new CloseChatResponse();
-        if (!auth.sessionIsValid(request.getHeader().getAuthToken())){
-            response.setEstado(false);
-            response.setStateCode(401);
-        } else {
-            List<MessageModel> messages = messageRepo.findAll();
-            for (MessageModel message : messages) {
-                System.out.println(message.getReceptorId()+" ---- "+request.getBody().getEmissorId());
-                if (message.getEmissorId()==request.getBody().getEmissorId() || message.getReceptorId()==request.getBody().getEmissorId())
-                    messageRepo.delete(message);
-            }
-            response.setEstado(true);
-        }
-        return response;
-    }
-
-    public AllMessagesResponse loadMessages (AllMessagesRequest request) {
-        AllMessagesResponse response = new AllMessagesResponse();
-        Optional<CiclistaModel> ciclista = ciclistaRepo.findById(request.getBody().getCiclistaId());
-        if (ciclista.isPresent()) {
-            List<MessageModel> messages = messageRepo.findAll();
-            if (messages.size()!=0) {
-                messages.forEach(message -> {
-                    if (message.getReceptorId()==ciclista.get().getId()) {
-                        MessageType messageType = new MessageType();
-                        Optional<UserModel> user = userRepo.findById(message.getEmissorId());
-                        if (user.isPresent()) {
-                            messageType.setCiclista(user.get().getNome());
-                        } else {
-                            messageType.setCiclista("---");
-                        }
-                        messageType.setMessage(message.getMessage());
-                        response.getMessageItem().add(messageType);
-                    }
-                });
-                if (response.getMessageItem().size()!=0){
-                    response.setEstado(true);
-                    response.setMensagem("Todas suas mensagens retornadas");
-                } else {
-                    response.setEstado(false);
-                    response.setMensagem("Sem mensagens!!!");
-                }
-            } else {
-                response.setEstado(false);
-                response.setMensagem("Não há mensagens!!!");
-            }
-        } else {
-            response.setEstado(false);
-            response.setMensagem("Impossível teres mensagens!!!!");
         }
         return response;
     }
@@ -364,32 +300,39 @@ public class CiclistaService{
                         TrajectType trajecto = new TrajectType();
                         PartidaType partida = new PartidaType();
                         ChegadaType chegada = new ChegadaType();
-                        System.out.println("OkoKoKookokOKo");
-                        if (aquisicoes.get(i) != null) {
-                            Optional<StationModel> station = stationRepo.findById(aquisicoes.get(i).getStation());
-                            partida.setEstacao(station.get().getName()+" - "+station.get().getLocalName());
-                            partida.setData(station.get().getCreatedAt());
-                            System.out.println("data da aquisição: "+station.get().getCreatedAt());
-                            partida.setLatitude(station.get().getLatitude());
-                            partida.setLongitude(station.get().getLongitude());
-                            trajecto.setPartida(partida);
-                        }
-                        if (aquisicoes.get(i+1) != null) {
-                            Optional<StationModel> station = stationRepo.findById(aquisicoes.get(i+1).getStation());
-                            chegada.setEstacao(station.get().getName()+" - "+station.get().getLocalName());
-                            chegada.setData(station.get().getCreatedAt());
-                            chegada.setLatitude(station.get().getLatitude());
-                            chegada.setLongitude(station.get().getLongitude());
-                            chegada.setBonus(station.get().getBonus());
-                            trajecto.setChegada(chegada);
+                        try{
+                            if (aquisicoes.get(i) != null) {
+                                System.out.println("sucesso!!!");
+                                StationModel station = stationRepo.findByName(aquisicoes.get(i).getStation());
+                                partida.setEstacao(station.getName()+" - "+station.getLocalName());
+                                partida.setData(station.getCreatedAt());
+                                partida.setLatitude(station.getLatitude());
+                                partida.setLongitude(station.getLongitude());
+                                trajecto.setPartida(partida);
+                            }
+                            if (aquisicoes.get(i+1) != null) {
+                                System.out.println("sucesso!!!");
+                                StationModel station = stationRepo.findByName(aquisicoes.get(i+1).getStation());
+                                System.out.println("dentro do sucesso!!!");
+                                chegada.setEstacao(station.getName()+" - "+station.getLocalName());
+                                chegada.setData(station.getCreatedAt());
+                                chegada.setLatitude(station.getLatitude());
+                                chegada.setLongitude(station.getLongitude());
+                                chegada.setBonus(station.getBonus());
+                                trajecto.setChegada(chegada);
+                            }
+                        } catch (Exception e) {
+                            
                         }
                         response.getTrajectList().add(trajecto);
                     }
+                    System.out.println("sucesso!!!");
                     response.setEstado(true);
                     response.setMensagem("Aqui estão todos os teus levantamentos e devoluções!!!");
                 } else response.setMensagem("Nenhum histórico foi gerado!");
             } else response.setMensagem("Impossível ver histórico!!!");
         }
+        System.out.println("sucesso!!!");
         return response;
     }
     

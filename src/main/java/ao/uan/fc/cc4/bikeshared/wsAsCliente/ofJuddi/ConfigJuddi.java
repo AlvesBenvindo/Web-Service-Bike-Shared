@@ -1,6 +1,5 @@
 package ao.uan.fc.cc4.bikeshared.wsAsCliente.ofJuddi;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration

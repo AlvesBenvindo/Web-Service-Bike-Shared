@@ -1,13 +1,18 @@
 package ao.uan.fc.cc4.bikeshared.bd.admin;
 
 import javax.persistence.*;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table(name="admins")
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class AdminModel {
 
     @Id
@@ -15,12 +20,27 @@ public class AdminModel {
     @Column(name = "id")
     private Long id;
     @Column(name = "bi", unique = true, nullable = false)
-    protected String bi;
+    private String bi;
     @Column(name = "telefone", unique = true, nullable = false)
-    protected  String telefone;
+    private  String telefone;
     @Column(name = "role", nullable = false)
-    protected  String role;
+    private  String role;
     @Column(name = "userId")
-    protected Long userId;
+    private Long userId;
+
+    public String returnString () {
+        return this.id +":"+ this.bi +":"+this.telefone+":"+this.role+":"+this.userId;
+    }
+
+    public static AdminModel parse (String objectString){
+        String [] data = objectString.split(objectString);
+        AdminModel a = new AdminModel();
+        a.setId(new Long(data[0]));
+        a.setBi(data[1]);
+        a.setTelefone(data[2]);
+        a.setRole(data[3]);
+        a.setUserId(new Long(data[4]));
+        return a;
+    }
 
 }

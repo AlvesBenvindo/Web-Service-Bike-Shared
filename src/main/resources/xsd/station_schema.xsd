@@ -305,7 +305,7 @@
                 <xs:complexType>
                   <xs:sequence>
                     <!-- id of dock -->
-                    <xs:element name="idStation" type="xs:long" />
+                    <xs:element name="station" type="xs:string" />
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>

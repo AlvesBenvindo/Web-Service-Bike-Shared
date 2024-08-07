@@ -277,12 +277,6 @@
         <xs:element name="genero" type="xs:string" />
         <!-- foto -->
         <xs:element name="foto" type="xs:string" />
-        <!-- token -->
-        <xs:element name="token" type="xs:string" />
-        <!-- state of ciclista -->
-        <xs:element name="state" type="xs:int" />
-        <!-- saldo of cliclista -->
-        <xs:element name="points" type="xs:int" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -311,6 +305,8 @@
       <xs:element name="bi" type="xs:string" />
       <!-- telefone -->
       <xs:element name="telefone" type="xs:string" />
+      <!-- info -->
+      <xs:element name="info" type="xs:string" />
       <!-- foto -->
       <xs:element name="foto" type="xs:string" />
       <!-- token -->
@@ -364,12 +360,6 @@
               <xs:element name="telefone" type="xs:string" />
               <!-- foto -->
               <xs:element name="foto" type="xs:string" />
-              <!--id ciclista-->
-              <xs:element name="ciclistaId" type="xs:long" />
-              <!-- state of ciclista -->
-              <xs:element name="state" type="xs:int" />
-              <!-- saldo of cliclista -->
-              <xs:element name="points" type="xs:int" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
@@ -408,46 +398,6 @@
     </xs:complexType>
   </xs:element>
 
-  <xs:element name="AllMessagesRequest">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element name="Header" type="tns:HeaderType" />
-        <xs:element name="Body">
-          <xs:complexType>
-            <xs:sequence>
-              <!-- id of ciclista issuer of points-->
-              <xs:element name="ciclistaId" type="xs:long" />
-            </xs:sequence>
-          </xs:complexType>
-        </xs:element>
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-
-  <xs:complexType name="MessageType">
-    <xs:sequence>
-      <!-- mensagem -->
-      <xs:element name="message" type="xs:string" />
-      <!-- nome do ciclista -->
-      <xs:element name="ciclista" type="xs:string" />
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:element name="AllMessagesResponse">
-    <xs:complexType>
-      <xs:sequence>
-        <!-- retorno da confirmação da inserção -->
-        <xs:element name="estado" type="xs:boolean" />
-        <!-- mensagem do estado -->
-        <xs:element name="mensagem" type="xs:string" />
-        <!-- código de estado -->
-        <xs:element name="stateCode" type="xs:int" />
-        <!-- código de estado -->
-        <xs:element name="messageItem" type="tns:MessageType" maxOccurs="unbounded"/>
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-
   <xs:element name="TransferPointsRequest">
     <xs:complexType>
       <xs:sequence>
@@ -475,66 +425,6 @@
         <xs:element name="estado" type="xs:boolean" />
         <!-- mensagem do estado -->
         <xs:element name="mensagem" type="xs:string" />
-        <!-- código de estado -->
-        <xs:element name="stateCode" type="xs:int" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-
-  <xs:element name="SendMessageRequest">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element name="Header" type="tns:HeaderType" />
-        <xs:element name="Body">
-          <xs:complexType>
-            <xs:sequence>
-              <!-- id of ciclista issuer of points-->
-              <xs:element name="emissorId" type="xs:long" />
-              <!-- mac-->
-              <xs:element name="mac" type="xs:string" />
-              <!-- points-->
-              <xs:element name="message" type="xs:string" />
-            </xs:sequence>
-          </xs:complexType>
-        </xs:element>
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-
-  <xs:element name="SendMessageResponse">
-    <xs:complexType>
-      <xs:sequence>
-        <!-- retorno da confirmação da inserção -->
-        <xs:element name="estado" type="xs:boolean" />
-        <!-- mensagem do estado -->
-        <xs:element name="mensagem" type="xs:string" />
-        <!-- código de estado -->
-        <xs:element name="stateCode" type="xs:int" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-
-  <xs:element name="CloseChatRequest">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element name="Header" type="tns:HeaderType" />
-        <xs:element name="Body">
-          <xs:complexType>
-            <xs:sequence>
-              <!-- id of ciclista issuer of points-->
-              <xs:element name="emissorId" type="xs:long" />
-            </xs:sequence>
-          </xs:complexType>
-        </xs:element>
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-
-  <xs:element name="CloseChatResponse">
-    <xs:complexType>
-      <xs:sequence>
-        <!-- retorno da confirmação da inserção -->
-        <xs:element name="estado" type="xs:boolean" />
         <!-- código de estado -->
         <xs:element name="stateCode" type="xs:int" />
       </xs:sequence>

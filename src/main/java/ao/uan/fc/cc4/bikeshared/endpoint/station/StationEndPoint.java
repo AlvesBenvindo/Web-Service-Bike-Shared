@@ -47,14 +47,14 @@ public class StationEndPoint {
     @PayloadRoot(namespace= NAMESPACE_URI, localPart = "AllStationRequest")
     @ResponsePayload
     public AllStationResponse getAllStations (@RequestPayload AllStationRequest request) {
-        System.out.println("Entrando no serviço add Station");
+        System.out.println("Entrando no serviço all Station");
         return stationService.getAllStations(request);
     }
 
     @PayloadRoot(namespace= NAMESPACE_URI, localPart = "AllStationMoreProximeRequest")
     @ResponsePayload
     public AllStationResponse getAllStationsMoreProxime (@RequestPayload AllStationMoreProximeRequest request) {
-        System.out.println("Entrando no serviço add Station");
+        System.out.println("Entrando no serviço all Station");
         return stationService.getAllStationMoreProxime(request);
     }
 

@@ -59,5 +59,21 @@ public class WebServiceConfig extends WsConfigurerAdapter {
         return new SimpleXsdSchema(new ClassPathResource("xsd/station_schema.xsd"));
     }
 
+    @Bean(name = "replication")
+    DefaultWsdl11Definition replicationWsdlDefinition (XsdSchema replicationSchema) {
+        DefaultWsdl11Definition wsdl11def = new DefaultWsdl11Definition();
+
+        wsdl11def.setPortTypeName("/apiSoapHttpBikeSharedReplication");
+        wsdl11def.setLocationUri("/ws");
+        wsdl11def.setTargetNamespace("http://replication.xml");
+        wsdl11def.setSchema(replicationSchema);
+
+        return wsdl11def;
+    }
+
+    @Bean
+    XsdSchema replicationSchema() {
+        return new SimpleXsdSchema(new ClassPathResource("xsd/replication.xsd"));
+    }
 
 }

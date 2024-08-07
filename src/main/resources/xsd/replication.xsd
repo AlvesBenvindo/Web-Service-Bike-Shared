@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+        xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        xmlns:tns="http://replication.xml"
+        targetNamespace="http://replication.xml"
+        elementFormDefault="qualified"
+>
+
+    <!-- Definition request AddDock method -->
+    <xs:element name="ReplicateRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <!-- table que será modificada -->
+                <xs:element name="table" type="xs:string" />
+                <!-- registro que será adicionado -->
+                <xs:element name="row" type="xs:string" />
+                <!-- action que será realizada (insert:default | delete | update) -->
+                <xs:element name="action" type="xs:string" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Definition response AddDock method -->
+    <xs:element name="ReplicateResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <!-- retorno da confirmação da inserção -->
+                <xs:element name="estado" type="xs:boolean" />
+                <!-- mensagem do estado -->
+                <xs:element name="mensagem" type="xs:string" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Definition request AddDock method -->
+    <xs:element name="WriteReplicateRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <!-- table que será modificada -->
+                <xs:element name="table" type="xs:string" />
+                <!-- registro que será adicionado -->
+                <xs:element name="row" type="xs:string" />
+                <!-- action que será realizada (insert:default | delete | update) -->
+                <xs:element name="action" type="xs:string" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Definition response AddDock method -->
+    <xs:element name="WriteReplicateResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <!-- retorno da confirmação da inserção -->
+                <xs:element name="estado" type="xs:boolean" />
+                <!-- mensagem do estado -->
+                <xs:element name="mensagem" type="xs:string" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

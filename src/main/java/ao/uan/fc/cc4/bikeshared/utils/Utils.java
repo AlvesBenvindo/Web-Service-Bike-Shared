@@ -19,7 +19,7 @@ public class Utils {
         return (c>='0' && c<='9')? true:false;
     }
 
-    private static Integer toInteger (String string) {
+    public static Integer toInteger (String string) {
         Integer number = 0;
         switch (string.charAt(0)) {
             case '0':;

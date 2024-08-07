@@ -6,6 +6,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ao.uan.fc.cc4.bikeshared.bd.admin.AdminModel;
+import ao.uan.fc.cc4.bikeshared.bd.admin.AdminRepository;
 import ao.uan.fc.cc4.bikeshared.bd.ciclista.CiclistaModel;
 import ao.uan.fc.cc4.bikeshared.bd.ciclista.CiclistaRepository;
 import ao.uan.fc.cc4.bikeshared.bd.session.SessionModel;
@@ -14,8 +16,7 @@ import ao.uan.fc.cc4.bikeshared.bd.user.UserModel;
 import ao.uan.fc.cc4.bikeshared.bd.user.UserRepository;
 import ao.uan.fc.cc4.bikeshared.config.security.JwtToken.Token;
 import ao.uan.fc.cc4.bikeshared.utils.HashPassword;
-import xml.soap.user.CiclistaResponse;
-import xml.soap.user.LoginCiclistaRequest;
+//import ao.uan.fc.cc4.bikeshared.wsAsCliente.ofReplica.WSReplica;
 import xml.soap.user.LoginRequest;
 import xml.soap.user.LogoutRequest;
 import xml.soap.user.UserResponse;
@@ -30,6 +31,10 @@ public class AuthenticationService {
     private SessionRepository sessionRepo;
     @Autowired(required = true)
     private CiclistaRepository ciclistaRepo;
+    @Autowired(required = true)
+    private AdminRepository adminRepo;
+    //@Autowired(required = true)
+    //private WSReplica serverWriter;
     @Autowired
     private Token jwtToken;
 
@@ -53,14 +58,16 @@ public class AuthenticationService {
                 session.setUser(user.getId());
                 if(user.getTipo()==2) session.setFingerprint(request.getMac());
                 sessionRepo.save(session);
+                //serverWriter.writeInReplica("session", sessionRepo.save(session).returnString());
 
                 BeanUtils.copyProperties(user, response);
                 if (user.getTipo() == 2) {
                     CiclistaModel ciclista = ciclistaRepo.findByUserId(user.getId());
-                    response.setRole("ciclista");
                     response.setCiclistaId(ciclista.getId());
+                    response.setRole("ciclista");
                 } else {
-                    response.setRole("admin");
+                    AdminModel admin = adminRepo.findByUserId(user.getId());
+                    response.setRole(admin.getRole());
                 }
 
                 response.setToken(session.getToken());
@@ -74,81 +81,7 @@ public class AuthenticationService {
             response.setEstado(false);
             response.setMensagem("email ou password errados!");
         }
-        return response;
-    }
-
-    // public UserResponse login(LoginRequest request) {
-    //     UserResponse response = new UserResponse();
-    //     response.setEstado(false);
-    //     UserModel user = userRepo.findByEmail(request.getEmail());
-    //     if (user != null && user.getTipo()==1) {
-    //         SessionModel sessionModel = sessionRepo.findByUser(user.getId());
-    //         if (sessionModel != null) {
-    //             sessionRepo.deleteById(sessionModel.getId());
-    //         } else if (user.getPassword().equals(HashPassword.hashing(request.getPassword()))) {
-    //             SessionModel session = new SessionModel();
-    //             session.setToken(jwtToken.generateToken(user.getEmail(), user.getTipo()));
-    //             session.setUser(user.getId());
-    //             sessionRepo.save(session);
-
-    //             BeanUtils.copyProperties(user, response);
-    //             AdminModel admin = adminRepo.findByUserId(user.getId());
-    //             if (admin!=null) {
-    //                 response.setRole(admin.getRole());
-    //             }
-
-    //             response.setToken(session.getToken());
-    //             response.setEstado(true);
-    //             response.setMensagem("Sessao iniciada com sucesso!");
-    //         } else{
-    //             response.setMensagem("email ou password errados!");
-    //         }
-    //     } else {
-    //         response.setMensagem("email ou password errados!");
-    //     }
-    //     return response;
-    // }
-
-    public CiclistaResponse loginCiclista(LoginCiclistaRequest request) {
-        CiclistaResponse response = new CiclistaResponse();
-        response.setEstado(false);
-        UserModel user = userRepo.findByEmail(request.getEmail());
-        if (user != null && user.getTipo()==2) {
-            SessionModel sessionModel = sessionRepo.findByUser(user.getId());
-            if (sessionModel != null) {
-                sessionRepo.deleteById(sessionModel.getId());
-            }
-            sessionModel = sessionRepo.findByFingerprint(request.getFingerPrint());
-            if (sessionModel != null) {
-                // sessionRepo.deleteById(sessionModel.getId());
-                sessionModel.setFingerprint(sessionModel.getFingerprint()+sessionModel.getId());
-                sessionRepo.save(sessionModel);
-            }
-            if (user.getPassword().equals(HashPassword.hashing(request.getPassword()))) {
-                SessionModel session = new SessionModel();
-                session.setToken(jwtToken.generateToken(user.getEmail(), user.getTipo()));
-                session.setUser(user.getId());
-                session.setFingerprint(request.getFingerPrint());
-                sessionRepo.save(session);
-
-                BeanUtils.copyProperties(user, response);
-                CiclistaModel ciclista = ciclistaRepo.findByUserId(user.getId());
-                if (ciclista != null) {
-                    response.setId(ciclista.getId());
-                    response.setMensagem("email ou password errados!");
-                    return response;
-                }
-                response.setUserId(user.getId());
-                response.setToken(session.getToken());
-
-                response.setEstado(true);
-                response.setMensagem("Sessao iniciada com sucesso!");
-            } else{
-                response.setMensagem("email ou password errados!");
-            }
-        } else {
-            response.setMensagem("email ou password errados!");
-        }
+        System.out.println("Fez login!!!");
         return response;
     }
 
@@ -205,7 +138,6 @@ public class AuthenticationService {
                         case 0: 
                             sessionRepo.delete(session);
                             return false;
-
                         case 1:
                             return true;
                     }

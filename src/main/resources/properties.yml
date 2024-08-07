@@ -9,19 +9,14 @@
 #     com.dam.baikshred: DEBUG
 # server:
 #   port: 8088
-# spring:
-#   datasource:
-#     url: jdbc:mysql://localhost:3306/baikshared
-#     username: root
-#     password:
-#   jpa:
-#     hibernate:
-#       ddl-auto: update
-#     show-sql: true
-#     properties:
-#       hibernate:
-#         format_sql: true
 
 opencage:
   api:
     key: 59f599ddccdf4708802a81a11f9920bb
+
+juddi:
+  url: http://localhost:9090
+
+api:
+  application:
+    secretKey: ef2ab415d79937d98efdda7c5b0199d32d8414c19f87579d500746da2d6c24a1810e2dd49a40cac172ece70c040e70ee660faf02b0c77ac0a4309b0af01e00012e32dade2ecd714694e27e749c20e4c0f60d991956798a37e27078a75e77574bf06c4bdea6e9318b23f06f2267217323b797f44e18967178de1aeae7fa9e338250d2a704e53f4d9ea5aa70dae7428e767a9a6f144782ee9811ea7de25c4f711183c284123f6a11c82747399229759c967fddd2726b88e6dcfd54b2f47bcbce7b59a62b91204d98fe39d6ef9439c7aa40ed6abbaa837e3c639941edec1e1d81bc9916fcb1ab33989d01cd8f19c601204251149aa63bc6b64139342a5ba2ddf41b

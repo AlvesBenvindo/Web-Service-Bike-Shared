@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CiclistaRepository extends JpaRepository<CiclistaModel, Long> {
     CiclistaModel findByUserId(Long userId);
+    boolean existsByUserId(Long userId);
 }

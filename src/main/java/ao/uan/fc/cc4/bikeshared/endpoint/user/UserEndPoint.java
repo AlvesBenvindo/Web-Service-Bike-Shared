@@ -84,7 +84,7 @@ public class UserEndPoint {
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "UpdateCiclistaRequest")
 	@ResponsePayload
 	public CiclistaResponse updateCiclista (@RequestPayload UpdateCiclistaRequest request) {
-		System.out.println("Entrando no updateCiclista ");
+		System.out.println("Entrando no update Ciclista ");
 		return ciclistaService.updateCiclista(request);
 	}
 
@@ -114,27 +114,6 @@ public class UserEndPoint {
     public TransferPointsResponse getSaldo (@RequestPayload TransferPointsRequest request) {
         System.out.println("Entrando no serviço de transferência de pontos");
 		return ciclistaService.transferPoints(request);
-    }
-
-    @PayloadRoot(namespace= NAMESPACE_URI, localPart = "SendMessageRequest")
-	@ResponsePayload
-    public SendMessageResponse sendMessage (@RequestPayload SendMessageRequest request) {
-        System.out.println("Entrando no serviço de envio de mensagens");
-		return ciclistaService.sendMessage(request);
-    }
-
-    @PayloadRoot(namespace= NAMESPACE_URI, localPart = "AllMessagesRequest")
-	@ResponsePayload
-    public AllMessagesResponse loadMessages (@RequestPayload AllMessagesRequest request) {
-        System.out.println("Entrando no serviço de envio de mensagens");
-		return ciclistaService.loadMessages(request);
-    }
-
-    @PayloadRoot(namespace= NAMESPACE_URI, localPart = "CloseChatRequest")
-	@ResponsePayload
-    public CloseChatResponse sendMessage (@RequestPayload CloseChatRequest request) {
-        System.out.println("Entrando no serviço de envio de mensagens");
-		return ciclistaService.closeChat(request);
     }
 
     @PayloadRoot(namespace= NAMESPACE_URI, localPart = "HistoricTrajectRequest")

@@ -19,6 +19,7 @@ import ao.uan.fc.cc4.bikeshared.utils.GeoLocationDTO;
 import ao.uan.fc.cc4.bikeshared.utils.Utils;
 import ao.uan.fc.cc4.bikeshared.wsAsCliente.ofJOpenCage.ServiceGeoLocation;
 import ao.uan.fc.cc4.bikeshared.wsAsCliente.ofJuddi.JuddiService;
+//import ao.uan.fc.cc4.bikeshared.wsAsCliente.ofReplica.WSReplica;
 import ao.uan.fc.cc4.bikeshared.wsAsCliente.ofStation.WSstation;
 import ao.uan.fc.cc4.bikeshared.bd.station.StationModel;
 import xml.soap.station.*;
@@ -47,6 +48,8 @@ public class StationService {
     private ServiceGeoLocation geoLocationService;
     @Autowired
     private JuddiService juddiService;
+    //@Autowired(required = true)
+    //private WSReplica serverWriter;
 
     public TestStationResponse testStation (TestStationRequest request) {
 
@@ -77,6 +80,7 @@ public class StationService {
                 } catch (Exception e) { // Catch any unexpected exceptions
                     station.get().setState(0);
                     stationRepo.save(station.get());
+                    //serverWriter.writeInReplica("station", stationRepo.save(station.get()).returnString());
                     response.setEstado(false);
                     response.setMensagem("Estação inactiva!!!");
                 }
@@ -124,7 +128,8 @@ public class StationService {
                         station.setQtdDocksDispo(qtdDispo);
                         System.out.println("abra");
                         try{
-                            stationRepo.save(station);
+                            station = stationRepo.save(station);
+                            //serverWriter.writeInReplica("station", station.returnString());
                         } catch (Exception exc) {
                             System.out.println("Não deu para salvar o registro!!!");
                         }
@@ -174,6 +179,7 @@ public class StationService {
                     stationModel.get().setQtdDocks(qtdDocks);
                     stationModel.get().setQtdDocksDispo(qtdDocksDispo);
                     stationRepo.save(stationModel.get());
+                    //serverWriter.writeInReplica("station", stationRepo.save(stationModel.get()).returnString());
 
                     BeanUtils.copyProperties(gsr, response);
                     response.setEstado(true);
@@ -228,33 +234,68 @@ public class StationService {
             response.setMensagem("Token inválido, undefined!");
             response.setStateCode(401);
         }else {
-            List<StationModel> stationList = stationRepo.findAll();
-            if (!stationList.isEmpty()) {
-                response.setEstado(true);
-                response.setMensagem("Estações encontradas com sucesso!");
-                stationList.forEach( station -> {
-                    StationResponseType stationType = new StationResponseType();
-                    BeanUtils.copyProperties(station, stationType);
-                    stationType.setDocks(station.getQtdDocks());
-                    stationType.setDocksDisp(station.getQtdDocksDispo());
-
-                    GeoLocationDTO geoLocation = geoLocationService.getGeoLocation(String.valueOf(station.getLatitude()), String.valueOf(station.getLongitude()));
-
-                    if(geoLocation!=null){
-
-                        stationType.setPais(geoLocation.getPais());
-                        stationType.setProvincia(geoLocation.getProvincia());
-                        stationType.setMunicipio(geoLocation.getMunicipio());
-                        stationType.setDistrito(geoLocation.getDistrito());
-                        stationType.setAvenida(geoLocation.getAvenida());
-
+            //SessionModel session = sessionRepo.findByToken(request.getHeader().getAuthToken());
+            //if (ciclistaRepo.existsByUserId(session.getUser())) {
+                List<StationModel> stationList = stationRepo.findAll();
+                if (!stationList.isEmpty()) {
+                    response.setEstado(true);
+                    response.setMensagem("Estações encontradas com sucesso!");
+                    for(StationModel station : stationList) {
+                        if(juddiService.checkStationService(station.getName())!=null){
+                            System.out.println(juddiService.checkStationService(station.getName()));
+                            StationResponseType stationType = new StationResponseType();
+                            BeanUtils.copyProperties(station, stationType);
+                            stationType.setDocks(station.getQtdDocks());
+                            stationType.setDocksDisp(station.getQtdDocksDispo());
+        
+                            GeoLocationDTO geoLocation = geoLocationService.getGeoLocation(String.valueOf(station.getLatitude()), String.valueOf(station.getLongitude()));
+        
+                            if(geoLocation!=null){
+        
+                                stationType.setPais(geoLocation.getPais());
+                                stationType.setProvincia(geoLocation.getProvincia());
+                                stationType.setMunicipio(geoLocation.getMunicipio());
+                                stationType.setDistrito(geoLocation.getDistrito());
+                                stationType.setAvenida(geoLocation.getAvenida());
+        
+                            }
+                            response.getStationItem().add(stationType);
+                        }
+                        
                     }
-                    response.getStationItem().add(stationType);
-                });
-            } else {
-                response.setEstado(false);
-                response.setMensagem("Não há estações ainda!");
-            }
+                } else {
+                    response.setEstado(false);
+                    response.setMensagem("Não há estações ainda!");
+                }
+            /*} else {
+                List<StationModel> stationList = stationRepo.findAll();
+                if (!stationList.isEmpty()) {
+                    response.setEstado(true);
+                    response.setMensagem("Estações encontradas com sucesso!");
+                    stationList.forEach( station -> {
+                        StationResponseType stationType = new StationResponseType();
+                        BeanUtils.copyProperties(station, stationType);
+                        stationType.setDocks(station.getQtdDocks());
+                        stationType.setDocksDisp(station.getQtdDocksDispo());
+
+                        GeoLocationDTO geoLocation = geoLocationService.getGeoLocation(String.valueOf(station.getLatitude()), String.valueOf(station.getLongitude()));
+
+                        if(geoLocation!=null){
+
+                            stationType.setPais(geoLocation.getPais());
+                            stationType.setProvincia(geoLocation.getProvincia());
+                            stationType.setMunicipio(geoLocation.getMunicipio());
+                            stationType.setDistrito(geoLocation.getDistrito());
+                            stationType.setAvenida(geoLocation.getAvenida());
+
+                        }
+                        response.getStationItem().add(stationType);
+                    });
+                } else {
+                    response.setEstado(false);
+                    response.setMensagem("Não há estações ainda!");
+                }
+            }*/
         }
         return response;
     }
@@ -271,33 +312,34 @@ public class StationService {
             if (!stationList.isEmpty()) {
                 response.setEstado(true);
                 stationList.forEach( station -> {
+                    if(juddiService.checkStationService(station.getName())!=null){
+                        Double distancia = geoLocationService.
+                            calcDistanceHaversine(
+                                new Coordinates(request.getBody().getLatitude(), request.getBody().getLongitude()), 
+                                new Coordinates(station.getLatitude().doubleValue(), station.getLongitude().doubleValue()), 
+                                request.getBody().getRadius()
+                            );
+                        
+                        if(distancia>0){
+                            StationResponseType stationType = new StationResponseType();
+                            BeanUtils.copyProperties(station, stationType);
+                            stationType.setDocks(station.getQtdDocks());
+                            stationType.setDocksDisp(station.getQtdDocksDispo());
+                            stationType.setDistancia(distancia.intValue());
 
-                    Double distancia = geoLocationService.
-                        calcDistanceHaversine(
-                            new Coordinates(request.getBody().getLatitude(), request.getBody().getLongitude()), 
-                            new Coordinates(station.getLatitude().doubleValue(), station.getLongitude().doubleValue()), 
-                            request.getBody().getRadius()
-                        );
-                    
-                    if(distancia>0){
-                        StationResponseType stationType = new StationResponseType();
-                        BeanUtils.copyProperties(station, stationType);
-                        stationType.setDocks(station.getQtdDocks());
-                        stationType.setDocksDisp(station.getQtdDocksDispo());
-                        stationType.setDistancia(distancia.intValue());
+                            GeoLocationDTO geoLocation = geoLocationService.getGeoLocation(String.valueOf(station.getLatitude()), String.valueOf(station.getLongitude()));
 
-                        GeoLocationDTO geoLocation = geoLocationService.getGeoLocation(String.valueOf(station.getLatitude()), String.valueOf(station.getLongitude()));
+                            if(geoLocation!=null){
 
-                        if(geoLocation!=null){
+                                stationType.setPais(geoLocation.getPais());
+                                stationType.setProvincia(geoLocation.getProvincia());
+                                stationType.setMunicipio(geoLocation.getMunicipio());
+                                stationType.setDistrito(geoLocation.getDistrito());
+                                stationType.setAvenida(geoLocation.getAvenida());
 
-                            stationType.setPais(geoLocation.getPais());
-                            stationType.setProvincia(geoLocation.getProvincia());
-                            stationType.setMunicipio(geoLocation.getMunicipio());
-                            stationType.setDistrito(geoLocation.getDistrito());
-                            stationType.setAvenida(geoLocation.getAvenida());
-
+                            }
+                            response.getStationItem().add(stationType);
                         }
-                        response.getStationItem().add(stationType);
                     }
                 });
                 if (response.getStationItem().isEmpty()) response.setMensagem("Não há estações num raio de "+request.getBody().getRadius()+" metros");
@@ -327,23 +369,22 @@ public class StationService {
                 /*
                  * Aqui está toda a lógica para levantar uma Bicicleta;
                  */
-                Integer idStation = Utils.extractInteger(request.getBody().getReferenceDock().split("_")[0]);
-                System.out.println(idStation);
-                Optional<StationModel> station = stationRepo.findById(idStation.longValue());
-                System.out.println("Endpoint: " + station.get().getEndpoint());
-                if (station.isPresent()) {
-                    //Pengando o estado actual da station em que será feito o levantamento
-                    GetStationResponse gsr = stationClient.getStationState(station.get().getEndpoint());
-                    gsr.getDockItem().forEach(dock ->{
-                        if(dock.getReference().equals(request.getBody().getReferenceDock())){
-                            /*if(dock.getInfo().equals(request.getBody().getInfo())){*/
-                            //Aqui alteramos o estado do ciclista que está a levantar a bike;
-                            if (ciclista.get().getState()==0){
+                if (ciclista.get().getState()==0){
+                    Integer idStation = Utils.extractInteger(request.getBody().getReferenceDock().split("_")[0]);
+                    String urlStation = juddiService.checkStationService(idStation);
+                    boolean check = false;
+                    if (urlStation != null) {
+                        //Pengando o estado actual da station em que será feito o levantamento
+                        GetStationResponse gsr = stationClient.getStationState(urlStation);
+                        for(xml.soap.DockType dock : gsr.getDockItem()) {
+                            if(dock.getReference().equals(request.getBody().getReferenceDock())){
+                                System.out.println(dock.getReference().equals(request.getBody().getReferenceDock()));
+                                System.out.println(dock.getReference().equals(request.getBody().getReferenceDock()));
                                 ciclista.get().setState(1);
                                 ciclista.get().setInfo(request.getBody().getInfo());
                                 //Aqui alteramos o estado da doca que tinha a Bike
                                 AlterStateDockInUpBikeResponse alteredDock = stationClient.updateDockStateInUpBike(
-                                    station.get().getEndpoint(),
+                                    urlStation,
                                     dock.getIdDock(),
                                     0);
                                 System.out.println(alteredDock.isEstado());
@@ -352,25 +393,36 @@ public class StationService {
                                     System.out.println("referencia: " + dock.getReference());
                                     //Actualizando o estado do ciclista
                                     ciclistaRepo.save(ciclista.get());
+                                    //serverWriter.writeInReplica("ciclista", ciclistaRepo.save(ciclista.get()).returnString());
+
                                     //registrando o levantamento da bike
                                     AquisicaoBikeModel aquisicao = new AquisicaoBikeModel();
-                                    aquisicao.setStation(station.get().getId());
+                                    aquisicao.setStation(gsr.getName());
                                     aquisicao.setTipo_aquisicao(1);
                                     aquisicao.setCiclistaId(ciclista.get().getId());
                                     aquisicao.setCreatedAt(utils.getInstante());
                                     aquisicicaoRepo.save(aquisicao);
+                                    //serverWriter.writeInReplica("aquisicao", aquisicicaoRepo.save(aquisicao).returnString());
                                     response.setEstadoCiclista(ciclista.get().getState());
                                     response.setEstado(true);
                                     response.setMensagem("Levantamento feito com sucesso");
+
+                                    check = true;
+                                    break;
+                                } else {
+                                    response.setMensagem("Impossível levantar bike");
+                                    break;
                                 }
-                            } else {
-                                response.setMensagem("Impossível levantar, ainda não devolveste a última bike que lavantaste!");
                             }
-                            //}
                         }
-                    });
-                }else{
-                    response.setMensagem("Estação não identificada!");
+                        if (!check) {
+                            response.setMensagem("Seleccione a doca correcta!!!");
+                        }
+                    } else {
+                        response.setMensagem("Estação indisponível!!!");
+                    }
+                } else {
+                    response.setMensagem("Impossível levantar, ainda não devolveste a última bike que lavantaste!");
                 }
             }else{
                 response.setMensagem("Impossível levantar Bike!");
@@ -396,48 +448,58 @@ public class StationService {
                 /*
                  * Aqui estará toda a lógica para devolver uma Bicicleta;
                  */
-                Integer idStation = Utils.extractInteger(request.getBody().getReferenceDock().split("_")[0]);
-                Optional<StationModel> station = stationRepo.findById(idStation.longValue());
-                if (station.isPresent()) {
-                    //Pengando o estado actual da station em que será feita a devolução
-                    GetStationResponse gsr = stationClient.getStationState(station.get().getEndpoint());
-                    gsr.getDockItem().forEach(dock ->{
-                        if(dock.getReference().equals(request.getBody().getReferenceDock())){
-                            /*if(dock.getInfo().equals(request.getBody().getInfo())){*/
-                            //Aqui alteramos o estado do ciclista que está a devolver a bike;
-                            if (ciclista.get().getState()==1) {
+                if (ciclista.get().getState()==1) {
+                    Integer idStation = Utils.extractInteger(request.getBody().getReferenceDock().split("_")[0]);
+                    String urlStation = juddiService.checkStationService(idStation);
+                    boolean check = false;
+                    if (urlStation != null) {
+                        //Pengando o estado actual da station em que será feita a devolução
+                        GetStationResponse gsr = stationClient.getStationState(urlStation);
+                        for(xml.soap.DockType dock : gsr.getDockItem()) {
+                            if(dock.getReference().equals(request.getBody().getReferenceDock())){
                                 ciclista.get().setState(0);
-                                ciclista.get().setPoints(ciclista.get().getPoints()+station.get().getBonus());
+                                ciclista.get().setPoints(ciclista.get().getPoints()+gsr.getBonus());
                                 //Aqui alteramos o estado da doca que terá a Bike
                                 AlterStateDockInDownBikeResponse alteredDock = stationClient.updateDockStateInDownBike(
-                                    station.get().getEndpoint(),
+                                    urlStation,
                                     dock.getIdDock(),
                                     1,
                                     request.getBody().getInfo()
                                 );
-                                    System.out.println(alteredDock.isEstado());
+                                System.out.println(alteredDock.isEstado());
                                 //Aqui estão os comandos para 0 processo de BD inserir na BD;
                                 if(alteredDock.isEstado()==true){
                                     //Actualizando o estado do ciclista
                                     ciclistaRepo.save(ciclista.get());
+                                    //serverWriter.writeInReplica("ciclista", ciclistaRepo.save(ciclista.get()).returnString());
+
                                     //registrando a devolução da bike
                                     AquisicaoBikeModel aquisicao = new AquisicaoBikeModel();
-                                    aquisicao.setStation(station.get().getId());
+                                    aquisicao.setStation(gsr.getName());
                                     aquisicao.setTipo_aquisicao(2);
                                     aquisicao.setCiclistaId(ciclista.get().getId());
                                     aquisicao.setCreatedAt(utils.getInstante());
                                     aquisicicaoRepo.save(aquisicao);
+                                    //serverWriter.writeInReplica("aquisicao", aquisicicaoRepo.save(aquisicao).returnString());
                                     response.setEstado(true);
-                                    response.setMensagem("Devolução feita com sucesso, recebeste "+station.get().getBonus()+" pontos de bónus!");
+                                    response.setMensagem("Devolução feita com sucesso, recebeste "+gsr.getBonus()+" pontos de bónus!");
+
+                                    check = true;
+                                    break;
+                                } else {
+                                    response.setMensagem("Impossível devolver bike!!!");
+                                    break;
                                 }
-                            } else {
-                                response.setMensagem("Impossível devolver, ainda não levantaste uma bike!");
-                            }
-                            //}
+                            } else response.setMensagem("Seleccione a doca correcta!!!");
                         }
-                    });
-                }else{
-                    response.setMensagem("Estação não identificada!");
+                        if (!check) {
+                            response.setMensagem("Seleccione a doca correcta!!!");
+                        }
+                    }else{
+                        response.setMensagem("Estação não identificada!");
+                    }
+                } else {
+                    response.setMensagem("Impossível devolver, ainda não levantaste uma bike!");
                 }
             }else{
                 response.setMensagem("Impossível devolver Bike!");
@@ -447,7 +509,7 @@ public class StationService {
     }
 
     public AddDockResp addDock (AddDockReq request) {
-
+        System.out.println("Entrou no serviço add dock");
         AddDockResp response = new AddDockResp();
         if (!auth.sessionIsValid(request.getHeader().getAuthToken())) {
             //this.DestilaHeadResponse(session);
@@ -455,22 +517,24 @@ public class StationService {
             response.setMensagem("Token inválido, undefined!");
             response.setStateCode(401);
         }else {
-
-            Optional<StationModel> station = stationRepo.findById(request.getBody().getIdStation());
-            if (station.isPresent()) {
+            System.out.println("Entrou no serviço add dock-2");
+            System.out.println("Nome da estação: "+request.getBody().getStation());
+            String urlService = juddiService.checkStationService(request.getBody().getStation());
+            try {
+                System.out.println("Entrou no serviço add dock-3");
                 /*
                  * Aqui estará toda a lógica para add uma doca em uma estação;
                  */
                 //Acedendo ao serviço de add de docas da station designada!
-                AddDockResponse gsr = stationClient.addDock(station.get().getEndpoint());
+                AddDockResponse gsr = stationClient.addDock(urlService);
                 //Aqui vem toda a lógica para adicionar uma nova doca
                 if (gsr.isState()==true){
                     response.setEstado(true);
                     response.setMensagem("Doca adicionada com sucesso!");
                 }
-            }else{
+            } catch (Exception exc) {
                 response.setEstado(false);
-                response.setMensagem("Não foi possível adicionar doca!");
+                response.setMensagem("Não foi possível adicionar doca, estação indisponível");
             }
         }
         return response;
@@ -486,21 +550,26 @@ public class StationService {
             response.setStateCode(401);
         }else {
             Integer idStation = Utils.extractInteger(request.getBody().getReference().split("_")[0]);
-            Optional<StationModel> station = stationRepo.findById(idStation.longValue());
-            if (station.isPresent()) {
+            String urlStation = juddiService.checkStationService(idStation);
+            if (urlStation != null) {
                 /*
                  * Aqui estará toda a lógica para eliminar uma doca em uma estação;
                  */
                 //Acedendo ao serviço de delete de docas da station designada!
-                DeleteDockResponse gsr = stationClient.deleteDock(station.get().getEndpoint(), request.getBody().getReference());
-                //Aqui vem toda a lógica para adicionar uma nova doca
-                if (gsr.isState()==true){
-                    response.setEstado(true);
-                    response.setMensagem("Doca removida com sucesso!");
+                try {
+                    DeleteDockResponse gsr = stationClient.deleteDock(urlStation, request.getBody().getReference());
+                    //Aqui vem toda a lógica para adicionar uma nova doca
+                    if (gsr.isState()==true){
+                        response.setEstado(true);
+                        response.setMensagem("Doca removida com sucesso!");
+                    }
+                } catch (Exception e) {
+                    response.setEstado(false);
+                    response.setMensagem("Não foi possível remover doca, estação indisponível!!!");
                 }
             }else{
                 response.setEstado(false);
-                response.setMensagem("Não foi possível remover doca!");
+                response.setMensagem("Não foi possível remover doca, estação indisponível!!!");
             }
         }
         return response;

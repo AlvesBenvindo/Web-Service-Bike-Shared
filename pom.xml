@@ -101,10 +101,10 @@
 			<version>2.3.1</version>
 		</dependency>
 
-		<dependency>
+		<!--dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
+		</dependency-->
 
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -158,12 +158,6 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-annotations</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>com.pusher</groupId>
-			<artifactId>pusher-http-java</artifactId>
-			<version>1.0.0</version>
 		</dependency>
 
 	</dependencies>
